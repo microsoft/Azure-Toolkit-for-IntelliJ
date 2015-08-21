@@ -123,4 +123,5 @@
     </group>
   </actions>
 
+    <helpset file="azure-toolkit-for-intellij-help.jar" path="/helpset.hs"/>
 </idea-plugin>
