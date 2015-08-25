@@ -44,6 +44,7 @@ import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 public class AzurePlugin extends AbstractProjectComponent {
     private static final Logger LOG = Logger.getInstance("#com.microsoft.intellij.AzurePlugin");
     public static final String PLUGIN_ID = "azure-toolkit-for-intellij";
+    public static final String COMMON_LIB_PLUGIN_ID = "common-lib-intellij";
     private static final String COMPONENTSETS_VERSION = "2.7.1"; // todo: temporary fix!
     private static final String PREFERENCESETS_VERSION = "2.7.1";
     public final static int REST_SERVICE_MAX_RETRY_COUNT = 7;

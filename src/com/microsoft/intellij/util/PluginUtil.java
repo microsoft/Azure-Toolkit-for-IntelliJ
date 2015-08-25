@@ -111,7 +111,7 @@ public class PluginUtil {
     public static String getAzureLibLocation() throws WACommonException {
         String libLocation;
         try {
-            String pluginInstLoc = String.format("%s%s%s", PathManager.getPluginsPath(), File.separator, AzurePlugin.PLUGIN_ID);
+            String pluginInstLoc = String.format("%s%s%s", PathManager.getPluginsPath(), File.separator, AzurePlugin.COMMON_LIB_PLUGIN_ID);
             libLocation = String.format(pluginInstLoc + "%s%s", File.separator,"lib");
             File file = new File(String.format(libLocation + "%s%s", File.separator, message("sdkLibBaseJar")));
             if (!file.exists()) {
