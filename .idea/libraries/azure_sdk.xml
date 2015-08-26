@@ -17,8 +17,6 @@
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-storage-2.0.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-tracing-util-0.7.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/commons-codec-1.6.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/azure-sdk/commons-lang3-3.1.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/azure-sdk/commons-logging-1.1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/commons-logging-1.1.3.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/httpclient-4.3.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/httpcore-4.3.jar!/" />
@@ -33,6 +31,7 @@
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/jersey-json-1.13.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/jettison-1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/mail-1.4.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/azure-sdk/commons-lang3-3.4.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
