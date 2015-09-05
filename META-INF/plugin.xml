@@ -1,11 +1,11 @@
 <idea-plugin version="2">
   <id>com.microsoft.tooling.msservices.intellij.azure</id>
-  <name>Azure tools for Java developers for IntelliJ.</name>
+  <name>Azure toolkit for IntelliJ.</name>
   <version>1.0</version>
   <vendor email="xplatjava@microsoft.com" url="http://www.microsoft.com">Microsoft</vendor>
 
   <description><![CDATA[
-      Azure tools for Java developers for IntelliJ.
+      Azure toolkit for IntelliJ.
     ]]></description>
 
   <change-notes><![CDATA[
@@ -22,7 +22,7 @@
   <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
   -->
-  <depends>com.microsoft.tooling.msservices.intellij.commonlib</depends>
+  <depends>com.microsoft.tooling.msservices.intellij.azure-services-explorer</depends>
   <depends optional="true">AntSupport</depends>
   <depends>com.intellij.modules.java</depends>
   <depends>com.intellij.modules.lang</depends>
