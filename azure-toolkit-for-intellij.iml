@@ -14,5 +14,6 @@
     <orderEntry type="library" scope="PROVIDED" name="azure-sdk" level="project" />
     <orderEntry type="library" name="ProjectManagerLibrary" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="antIntegration" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="org.apache.commons:commons-lang3:3.4" level="project" />
   </component>
 </module>

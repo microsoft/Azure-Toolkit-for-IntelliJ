@@ -13,7 +13,7 @@
   </change-notes>
 
   <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="131"/>
+  <idea-version since-build="141"/>
 
   <resource-bundle>com.microsoft.intellij.ui.messages.messages</resource-bundle>
 
