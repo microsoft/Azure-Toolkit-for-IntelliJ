@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="azure-toolkit-for-intellij" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.tox/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.zip"/>
+    <include name="*.apk"/>
+    <include name="*.war"/>
+    <include name="*.egg"/>
+    <include name="*.ear"/>
+    <include name="*.ane"/>
+    <include name="*.swc"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library..cspack.classpath">
+    <pathelement location="${basedir}/lib/.cspack.jar"/>
+  </path>
+  
+  <path id="library.antintegration.classpath">
+    <pathelement location="${idea.home}/plugins/ant/lib/antIntegration.jar"/>
+  </path>
+  
+  <path id="library.azure-sdk.classpath">
+    <pathelement location="${basedir}/lib/azure-sdk/activation-1.1.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-core-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-compute-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-media-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-network-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-scheduler-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-sql-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-storage-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-management-websites-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-media-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-servicebus-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-serviceruntime-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-storage-2.0.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/azure-tracing-util-0.7.0.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jackson-core-asl-1.9.2.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jackson-jaxrs-1.9.2.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jackson-mapper-asl-1.9.2.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jackson-xc-1.9.2.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/javax.inject-1.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jaxb-impl-2.2.3-1.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jersey-client-1.13.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jersey-core-1.13.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jersey-json-1.13.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/jettison-1.1.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/mail-1.4.5.jar"/>
+  </path>
+  
+  <path id="library.azurecommons.classpath">
+    <pathelement location="${basedir}/lib/AzureCommons.jar"/>
+  </path>
+  
+  <path id="library.org.apache.commons:commons-lang3:3.4.classpath">
+    <pathelement location="${path.variable.maven_repository}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar"/>
+  </path>
+  
+  <path id="library.projectmanagerlibrary.classpath">
+    <pathelement location="${basedir}/lib/ProjectManagerLibrary.jar"/>
+  </path>
+  
+  
+  <!-- Global Libraries -->
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module azure-toolkit-for-intellij -->
+  
+  <dirname property="module.azure-toolkit-for-intellij.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.azure-toolkit-for-intellij" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="azure-toolkit-for-intellij.output.dir" value="${module.azure-toolkit-for-intellij.basedir}/out/production/azure-toolkit-for-intellij"/>
+  <property name="azure-toolkit-for-intellij.testoutput.dir" value="${module.azure-toolkit-for-intellij.basedir}/out/test/azure-toolkit-for-intellij"/>
+  
+  <path id="azure-toolkit-for-intellij.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="azure-toolkit-for-intellij.module.production.classpath">
+    <path refid="library.azurecommons.classpath"/>
+    <path refid="library..cspack.classpath"/>
+    <path refid="library.azure-sdk.classpath"/>
+    <path refid="library.projectmanagerlibrary.classpath"/>
+    <path refid="library.antintegration.classpath"/>
+    <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
+  </path>
+  
+  <path id="azure-toolkit-for-intellij.runtime.production.module.classpath">
+    <pathelement location="${azure-toolkit-for-intellij.output.dir}"/>
+    <path refid="library.azurecommons.classpath"/>
+    <path refid="library..cspack.classpath"/>
+    <path refid="library.projectmanagerlibrary.classpath"/>
+  </path>
+  
+  <path id="azure-toolkit-for-intellij.module.classpath">
+    <pathelement location="${azure-toolkit-for-intellij.output.dir}"/>
+    <path refid="library.azurecommons.classpath"/>
+    <path refid="library..cspack.classpath"/>
+    <path refid="library.azure-sdk.classpath"/>
+    <path refid="library.projectmanagerlibrary.classpath"/>
+    <path refid="library.antintegration.classpath"/>
+    <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
+  </path>
+  
+  <path id="azure-toolkit-for-intellij.runtime.module.classpath">
+    <pathelement location="${azure-toolkit-for-intellij.testoutput.dir}"/>
+    <pathelement location="${azure-toolkit-for-intellij.output.dir}"/>
+    <path refid="library.azurecommons.classpath"/>
+    <path refid="library..cspack.classpath"/>
+    <path refid="library.azure-sdk.classpath"/>
+    <path refid="library.projectmanagerlibrary.classpath"/>
+    <path refid="library.antintegration.classpath"/>
+    <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.azure-toolkit-for-intellij">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.azure-toolkit-for-intellij">
+    <patternset refid="excluded.from.module.azure-toolkit-for-intellij"/>
+  </patternset>
+  
+  <path id="azure-toolkit-for-intellij.module.sourcepath">
+    <dirset dir="${module.azure-toolkit-for-intellij.basedir}">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.azure-toolkit-for-intellij" depends="compile.module.azure-toolkit-for-intellij.production,compile.module.azure-toolkit-for-intellij.tests" description="Compile module azure-toolkit-for-intellij"/>
+  
+  <target name="compile.module.azure-toolkit-for-intellij.production" depends="register.custom.compilers" description="Compile module azure-toolkit-for-intellij; production classes">
+    <mkdir dir="${azure-toolkit-for-intellij.output.dir}"/>
+    <javac2 destdir="${azure-toolkit-for-intellij.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.azure-toolkit-for-intellij}"/>
+      <bootclasspath refid="azure-toolkit-for-intellij.module.bootclasspath"/>
+      <classpath refid="azure-toolkit-for-intellij.module.production.classpath"/>
+      <src refid="azure-toolkit-for-intellij.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.azure-toolkit-for-intellij"/>
+    </javac2>
+    
+    <copy todir="${azure-toolkit-for-intellij.output.dir}">
+      <fileset dir="${module.azure-toolkit-for-intellij.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.azure-toolkit-for-intellij.basedir}/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.azure-toolkit-for-intellij.tests" depends="register.custom.compilers,compile.module.azure-toolkit-for-intellij.production" description="compile module azure-toolkit-for-intellij; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.azure-toolkit-for-intellij" description="cleanup module">
+    <delete dir="${azure-toolkit-for-intellij.output.dir}"/>
+    <delete dir="${azure-toolkit-for-intellij.testoutput.dir}"/>
+  </target>
+  
+  <property name="azure-toolkit-for-intellij.plugin.path.jar" value="${module.azure-toolkit-for-intellij.basedir}/azure-toolkit-for-intellij.zip"/>
+  
+  <!-- Build archive for plugin 'azure-toolkit-for-intellij' -->
+  <target name="plugin.build.jar.azure-toolkit-for-intellij" depends="compile.module.azure-toolkit-for-intellij" description="Build plugin archive for module &#39;azure-toolkit-for-intellij&#39;">
+    <property name="tmp.dir.azure-toolkit-for-intellij" value="${module.azure-toolkit-for-intellij.basedir}/../temp"/>
+    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}"/>
+    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/lib"/>
+    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/help"/>
+    <jar destfile="${tmp.dir.azure-toolkit-for-intellij}/lib/azure-toolkit-for-intellij.jar" duplicate="preserve">
+      <zipfileset dir="${module.azure-toolkit-for-intellij.basedir}/out/production/azure-toolkit-for-intellij"/>
+      <zipfileset file="${module.azure-toolkit-for-intellij.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/help/azure-toolkit-for-intellij-help.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/help/azure-toolkit-for-intellij-help.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/ProjectManagerLibrary.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/lib/ProjectManagerLibrary.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/.cspack.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/lib/.cspack.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/AzureCommons.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/lib/AzureCommons.jar"/>
+    <zip destfile="${azure-toolkit-for-intellij.plugin.path.jar}">
+      <fileset dir="${module.azure-toolkit-for-intellij.basedir}/../temp"/>
+    </zip>
+    <delete dir="${tmp.dir.azure-toolkit-for-intellij}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.azure-toolkit-for-intellij" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, plugin.build.jar.azure-toolkit-for-intellij" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
