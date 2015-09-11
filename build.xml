@@ -233,9 +233,10 @@
   <target name="plugin.build.jar.azure-toolkit-for-intellij" depends="compile.module.azure-toolkit-for-intellij" description="Build plugin archive for module &#39;azure-toolkit-for-intellij&#39;">
     <property name="tmp.dir.azure-toolkit-for-intellij" value="${module.azure-toolkit-for-intellij.basedir}/../temp"/>
     <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}"/>
-    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/lib"/>
-    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/help"/>
-    <jar destfile="${tmp.dir.azure-toolkit-for-intellij}/lib/azure-toolkit-for-intellij.jar" duplicate="preserve">
+    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij"/>
+    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib"/>
+    <mkdir dir="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/help"/>
+    <jar destfile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/azure-toolkit-for-intellij.jar" duplicate="preserve">
       <zipfileset dir="${module.azure-toolkit-for-intellij.basedir}/out/production/azure-toolkit-for-intellij"/>
       <zipfileset file="${module.azure-toolkit-for-intellij.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
       <manifest>
@@ -243,10 +244,10 @@
         <attribute name="Manifest-Version" value="1.0"/>
       </manifest>
     </jar>
-    <copy file="${module.azure-toolkit-for-intellij.basedir}/help/azure-toolkit-for-intellij-help.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/help/azure-toolkit-for-intellij-help.jar"/>
-    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/ProjectManagerLibrary.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/lib/ProjectManagerLibrary.jar"/>
-    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/.cspack.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/lib/.cspack.jar"/>
-    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/AzureCommons.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/lib/AzureCommons.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/help/azure-toolkit-for-intellij-help.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/help/azure-toolkit-for-intellij-help.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/ProjectManagerLibrary.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/ProjectManagerLibrary.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/.cspack.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/.cspack.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/AzureCommons.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/AzureCommons.jar"/>
     <zip destfile="${azure-toolkit-for-intellij.plugin.path.jar}">
       <fileset dir="${module.azure-toolkit-for-intellij.basedir}/../temp"/>
     </zip>
