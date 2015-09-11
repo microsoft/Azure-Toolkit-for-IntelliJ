@@ -1,17 +1,23 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	 http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.intellij.ui;
 
@@ -24,11 +30,6 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.interopbridges.tools.windowsazure.*;
-import com.microsoftopentechnologies.azurecommons.roleoperations.JdkSrvConfigUtilMethods;
-import com.microsoftopentechnologies.azurecommons.roleoperations.WAServerConfUtilMethods;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
-import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
 import com.microsoft.intellij.ui.messages.AzureBundle;
@@ -36,6 +37,11 @@ import com.microsoft.intellij.ui.util.JdkSrvConfig;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoft.intellij.util.WAHelper;
+import com.microsoftopentechnologies.azurecommons.roleoperations.JdkSrvConfigUtilMethods;
+import com.microsoftopentechnologies.azurecommons.roleoperations.WAServerConfUtilMethods;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
+import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,10 +54,13 @@ import java.awt.event.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 import static com.microsoft.intellij.AzurePlugin.log;
+import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
 
 public class JdkServerPanel {
@@ -534,6 +543,7 @@ public class JdkServerPanel {
     private FocusListener createServerPathPreferenceListener() {
         return new FocusListener() {
             private String oldTxt = "";
+
             @Override
             public void focusGained(FocusEvent e) {
                 oldTxt = serverPath.getText();
@@ -567,6 +577,7 @@ public class JdkServerPanel {
     private FocusListener createJdkPathPreferenceListener() {
         return new FocusListener() {
             private String oldTxt = "";
+
             @Override
             public void focusGained(FocusEvent e) {
                 oldTxt = jdkPath.getText();
@@ -595,7 +606,9 @@ public class JdkServerPanel {
         };
     }
 
-    /** Sets the JDK.
+    /**
+     * Sets the JDK.
+     *
      * @throws WindowsAzureInvalidProjectOperationException
      */
     private void handleJdkDirRemoval() throws WindowsAzureInvalidProjectOperationException {
@@ -614,7 +627,7 @@ public class JdkServerPanel {
         String oldName = waRole.getServerName();
         String oldPath = waRole.getServerSourcePath();
         // Remove old server from approot
-        if (oldName != null && oldPath != null && !oldPath.isEmpty() &&  !fileToDel.contains("srv")) {
+        if (oldName != null && oldPath != null && !oldPath.isEmpty() && !fileToDel.contains("srv")) {
             fileToDel.add("srv");
             WindowsAzureRoleComponent cmp = getPrevCmpnt(message("typeSrvDply"));
             if (cmp != null) {
@@ -642,6 +655,7 @@ public class JdkServerPanel {
     /**
      * Method returns component object according to component type.
      * If component not present then returns NULL.
+     *
      * @param cmpntType
      * @return WindowsAzureRoleComponent
      */
@@ -660,6 +674,7 @@ public class JdkServerPanel {
      * according to current package type.
      * Method will get called when user click
      * on OK button or tries to navigate to other page.
+     *
      * @param srvHome
      */
     private void updateServerHomeAsPerPackageType(String srvHome) {
@@ -672,6 +687,7 @@ public class JdkServerPanel {
 
     /**
      * Updates server settings when UI controls change.
+     *
      * @param newName
      * @param newPath
      * @param componentFile
@@ -681,8 +697,8 @@ public class JdkServerPanel {
             String oldName = waRole.getServerName();
             String oldPath = waRole.getServerSourcePath();
             String path = newPath;
-			/*
-			 * Trying to set server to same value,
+            /*
+             * Trying to set server to same value,
 			 * then don't do anything.
 			 */
             if (newName != null && path != null && newName.equalsIgnoreCase(oldName) && path.equalsIgnoreCase(oldPath)) {
@@ -699,7 +715,7 @@ public class JdkServerPanel {
                     finalAsName = cmp.getDeployName();
                 }
             }
-			/*
+            /*
 			 * Trying to set server with name only.
 			 * Consider scenario where user selected server type using combo box
 			 * without selecting server directory path
@@ -784,6 +800,7 @@ public class JdkServerPanel {
     /**
      * Method is used when focus is lost
      * from server directory text box.
+     *
      * @param srvPath
      * @param label
      * @param labelNext
@@ -1302,6 +1319,7 @@ public class JdkServerPanel {
 
     /**
      * Method is used when JDK check box is checked.
+     *
      * @return
      */
     public String jdkChkBoxChecked(String depJdkName) {
@@ -1343,6 +1361,7 @@ public class JdkServerPanel {
 
     /**
      * Method is used when JDK directory text is modified.
+     *
      * @param role
      * @param label
      */
@@ -1357,6 +1376,7 @@ public class JdkServerPanel {
 
     /**
      * Enable or disable components of JDK group according to status.
+     *
      * @param status
      */
     public void setEnableJDK(boolean status) {
@@ -1451,6 +1471,7 @@ public class JdkServerPanel {
     /**
      * Method is used when focus is lost
      * from JDK directory text box.
+     *
      * @param jdkPath
      */
     public void focusLostJdkText(String jdkPath) {
@@ -1506,6 +1527,7 @@ public class JdkServerPanel {
     /**
      * Enable or disable components of
      * JDK download group according to status.
+     *
      * @param status
      */
     public void setEnableDlGrp(boolean status, boolean applyAutoUlParams) {
@@ -1591,6 +1613,7 @@ public class JdkServerPanel {
 
     /**
      * Method is used when Server directory text is modified.
+     *
      * @param role
      * @param label
      */
@@ -1610,6 +1633,7 @@ public class JdkServerPanel {
 
     /**
      * Enable or disable components of Server group according to status.
+     *
      * @param status
      */
     public void setEnableServer(boolean status) {
@@ -1638,6 +1662,7 @@ public class JdkServerPanel {
     /**
      * Enable or disable components of
      * Server download group according to status.
+     *
      * @param status
      */
     public void setEnableDlGrpSrv(boolean status, boolean applyAutoUlParams) {
@@ -1699,6 +1724,7 @@ public class JdkServerPanel {
     /**
      * Method used when JDK auto upload/no JDK deployment
      * radio button selected.
+     *
      * @param label
      */
     public void configureAutoUploadJDKSettings(String label) {
@@ -1716,6 +1742,7 @@ public class JdkServerPanel {
     /**
      * Enable or disable third party JDK
      * related components.
+     *
      * @param status
      */
     public void enableThirdPartyJdkCombo(Boolean status) {
@@ -1805,6 +1832,7 @@ public class JdkServerPanel {
 
     /**
      * Server directory browse button listener.
+     *
      * @param label
      * @return
      */
@@ -1853,6 +1881,7 @@ public class JdkServerPanel {
 
     /**
      * API to determine if storage account is selected or not in JDK tab
+     *
      * @return true if storage account is selected in JDK tab else false.
      */
     public boolean isSASelectedForJDK() {
@@ -1861,6 +1890,7 @@ public class JdkServerPanel {
 
     /**
      * API to determine if storage account is selected or not in Server tab
+     *
      * @return true if storage account is selected in Server tab else false.
      */
     public boolean isSASelectedForSrv() {
@@ -1904,6 +1934,7 @@ public class JdkServerPanel {
 
     /**
      * Listener for URL text box's text change.
+     *
      * @param url
      * @param nameInUrl
      * @param combo
@@ -1915,6 +1946,7 @@ public class JdkServerPanel {
 
     /**
      * Listener for storage account combo box.
+     *
      * @param combo
      * @param urlTxt
      * @param tabControl
@@ -2077,6 +2109,7 @@ public class JdkServerPanel {
     /**
      * Method configures cloud deployment for JDK
      * by saving URL, key and cloud method.
+     *
      * @return
      */
     private boolean configureJdkCloudDeployment() {
@@ -2124,6 +2157,7 @@ public class JdkServerPanel {
     /**
      * Method configures cloud deployment for server
      * by saving URL, key and cloud method.
+     *
      * @return
      */
     private boolean configureSrvCloudDeployment() {
@@ -2170,6 +2204,7 @@ public class JdkServerPanel {
      * according to current package type.
      * Method will get called when user click
      * on OK button or tries to navigate to other page.
+     *
      * @param javaHome
      */
     private void updateJavaHomeAsPerPackageType(String javaHome) {
@@ -2331,7 +2366,7 @@ public class JdkServerPanel {
                     String javaHome = this.javaHome.getText().trim();
                     if (javaHome.isEmpty()) {
                         throw new ConfigurationException(message("jvHomeErMsg"), message("genErrTitle"));
-                    }  else {
+                    } else {
                         boolean tempAccepted = true;
                         if (thirdPartyJdk.isSelected() && !accepted) {
                             tempAccepted = createAccLicenseAggDlg(true);

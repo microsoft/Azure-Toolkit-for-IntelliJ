@@ -1,17 +1,23 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.microsoft.intellij.ui.azureroles;
@@ -27,27 +33,26 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.interopbridges.tools.windowsazure.*;
-import com.microsoftopentechnologies.azurecommons.roleoperations.ImportExportDialogUtilMethods;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
-import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
 import com.microsoft.intellij.ui.AzureWizardModel;
 import com.microsoft.intellij.ui.StorageAccountPanel;
 import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
 import com.microsoft.intellij.ui.util.JdkSrvConfig;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.util.PluginUtil;
+import com.microsoftopentechnologies.azurecommons.roleoperations.ImportExportDialogUtilMethods;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
+import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-
 import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 
-import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 import static com.microsoft.intellij.AzurePlugin.log;
+import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 import static com.microsoft.intellij.util.PluginUtil.BASE_PATH;
 
 public class ImportExportDialog extends DialogWrapper {
@@ -89,7 +94,7 @@ public class ImportExportDialog extends DialogWrapper {
         this.isEdit = component != null;
         try {
             for (int i = 0; i < waRole.getComponents().size(); i++) {
-                WindowsAzureRoleComponent cmpnt =waRole.getComponents().get(i);
+                WindowsAzureRoleComponent cmpnt = waRole.getComponents().get(i);
                 cmpList.add(PluginUtil.getAsName(project, cmpnt.getImportPath(), cmpnt.getImportMethod(), cmpnt.getDeployName()).toLowerCase());
             }
         } catch (WindowsAzureInvalidProjectOperationException e) {
@@ -164,7 +169,7 @@ public class ImportExportDialog extends DialogWrapper {
                         }
                         txtFromPath.setText(selFile);
                             /*
-					         * If new from path is selected then
+                             * If new from path is selected then
 					         * remove previous As name text.
 					         */
                         if (!oldPath.equals(selFile)) {
@@ -197,8 +202,8 @@ public class ImportExportDialog extends DialogWrapper {
                             directory = replaceString.replace(subString, BASE_PATH);
                         }
                         txtFromPath.setText(directory);
-				/*
-				 * If new from path is selected then
+                /*
+                 * If new from path is selected then
 				 * remove previous As name text.
 				 */
                         if (!oldPath.equals(directory)) {
@@ -334,6 +339,7 @@ public class ImportExportDialog extends DialogWrapper {
     /**
      * Method returns As Name according to
      * import method.
+     *
      * @return
      */
     public String getAsName() {
@@ -344,6 +350,7 @@ public class ImportExportDialog extends DialogWrapper {
     /**
      * This method used for updating the import
      * method combo box values.Values gets changed on user input.
+     *
      * @param impPath import file path
      */
     private void updateImportMethodCombo(String impPath) {
@@ -452,6 +459,7 @@ public class ImportExportDialog extends DialogWrapper {
 
     /**
      * This method determines the nature of the import source.
+     *
      * @param srcPath import path
      * @return nature of resource(file,folder,project)
      */
@@ -490,6 +498,7 @@ public class ImportExportDialog extends DialogWrapper {
      * of project. If that project is in same workspace then
      * this method will return true so we have to make the path
      * relative else we have to display absolute path.
+     *
      * @param prjName project name
      * @return: true if project is in workspace else false
      */
@@ -544,7 +553,7 @@ public class ImportExportDialog extends DialogWrapper {
                         case none:
                             comboCloud.setSelectedItem(CLOUD_METHODS[0]);
                             break;
-                        case  unzip:
+                        case unzip:
                             comboCloud.setSelectedItem(CLOUD_METHODS[1]);
                             break;
                         default:
@@ -567,6 +576,7 @@ public class ImportExportDialog extends DialogWrapper {
     /**
      * Enable or disable components of
      * download group according to status.
+     *
      * @param status
      */
     private void setEnableDlGrp(boolean status) {
@@ -588,12 +598,13 @@ public class ImportExportDialog extends DialogWrapper {
 
     /**
      * This method validated the data entered by user.
+     *
      * @return true if all data is valid else return false
      */
     private boolean validateData() {
         boolean isValidPath = true;
         String path = txtFromPath.getText();
-        if ((path.isEmpty()|| txtFromPath.getText().equalsIgnoreCase(".\\")) && txtName.getText().isEmpty()) {
+        if ((path.isEmpty() || txtFromPath.getText().equalsIgnoreCase(".\\")) && txtName.getText().isEmpty()) {
             isValidPath = false;
             PluginUtil.displayErrorDialog(message("impExpErrTtl"), message("impExpErrMsg"));
             return isValidPath;
@@ -642,6 +653,7 @@ public class ImportExportDialog extends DialogWrapper {
     /**
      * Method validates URL and access key given
      * for deploy from download group.
+     *
      * @return
      */
     private boolean validateDlGroup() {

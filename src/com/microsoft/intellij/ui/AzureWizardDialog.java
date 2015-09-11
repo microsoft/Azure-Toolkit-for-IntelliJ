@@ -1,17 +1,23 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	 http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.intellij.ui;
 
@@ -23,18 +29,18 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.ui.wizard.WizardDialog;
 import com.interopbridges.tools.windowsazure.*;
-import com.microsoftopentechnologies.azurecommons.roleoperations.WizardUtilMethods;
 import com.microsoft.intellij.module.AzureModuleBuilder;
 import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.AppCmpntParam;
 import com.microsoft.intellij.util.ParseXML;
 import com.microsoft.intellij.util.PluginUtil;
+import com.microsoftopentechnologies.azurecommons.roleoperations.WizardUtilMethods;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.util.*;
+import java.util.Map;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
@@ -51,7 +57,7 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
             + AzureBundle.message("pWizLaunchFile");
 
     private AzureWizardModel model;
-//todo:
+    //todo:
     private String errorTitle;
     private String errorMessage;
 
@@ -133,11 +139,11 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
      * and key features like session affinity, caching, debugging
      * if user wants to do so.
      *
-     * @param projName          : Name of the project
-     * @param projLocation      : Location of the project
-     * @param isDefault         : whether location of project is default
-     * @param depMap            : stores configurations done on WATagPage
-     * @param ftrMap            : stores configurations done on WAKeyFeaturesPage
+     * @param projName     : Name of the project
+     * @param projLocation : Location of the project
+     * @param isDefault    : whether location of project is default
+     * @param depMap       : stores configurations done on WATagPage
+     * @param ftrMap       : stores configurations done on WAKeyFeaturesPage
      */
     private void doFinish(final String projName, final String projLocation, boolean isDefault, Map<String, String> depMap, Map<String, Boolean> ftrMap) {
         try {
@@ -146,7 +152,7 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
             if (!depMap.isEmpty()) {
                 File templateFile = new File(depMap.get("tempFile"));
                 WizardUtilMethods.configureJDKServer(role, depMap);
-            	/*
+                /*
                  * Handling adding server application
                  * without configuring server/JDK.
                  * Always add cloud attributes as
@@ -167,13 +173,13 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
             /**
              * Handling for HelloWorld application in plug-in
              */
-                if (!myModel.getAppsAsNames().contains(AzureBundle.message("helloWorld"))) {
-                    java.util.List<WindowsAzureRoleComponent> waCompList = model.getWaRole().getServerApplications();
-                    for (WindowsAzureRoleComponent waComp : waCompList) {
-                        if (waComp.getDeployName().equalsIgnoreCase(AzureBundle.message("helloWorld")) && waComp.getImportPath().isEmpty()) {
-                            waComp.delete();
-                        }
+            if (!myModel.getAppsAsNames().contains(AzureBundle.message("helloWorld"))) {
+                java.util.List<WindowsAzureRoleComponent> waCompList = model.getWaRole().getServerApplications();
+                for (WindowsAzureRoleComponent waComp : waCompList) {
+                    if (waComp.getDeployName().equalsIgnoreCase(AzureBundle.message("helloWorld")) && waComp.getImportPath().isEmpty()) {
+                        waComp.delete();
                     }
+                }
             }
 
             // Enable Key features
@@ -181,8 +187,8 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
             if (ftrMap.get("ssnAffChecked")) {
                 WindowsAzureEndpoint httpEndPt = role.getEndpoint(AzureBundle.message("httpEp"));
                 if (httpEndPt == null) {
-            		/*
-            		 * server is not enabled.
+                    /*
+                     * server is not enabled.
             		 * hence create new endpoint
             		 * for session affinity.
             		 */
@@ -207,8 +213,8 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
 
             // Remote Debugging
             if (ftrMap.get("debugChecked")) {
-                if (role.isValidEndpoint(AzureBundle.message("dbgEp"),WindowsAzureEndpointType.Input, DEBUG_PORT, DEBUG_PORT)) {
-                    WindowsAzureEndpoint dbgEndPt = role.addEndpoint(AzureBundle.message("dbgEp"),WindowsAzureEndpointType.Input, DEBUG_PORT, DEBUG_PORT);
+                if (role.isValidEndpoint(AzureBundle.message("dbgEp"), WindowsAzureEndpointType.Input, DEBUG_PORT, DEBUG_PORT)) {
+                    WindowsAzureEndpoint dbgEndPt = role.addEndpoint(AzureBundle.message("dbgEp"), WindowsAzureEndpointType.Input, DEBUG_PORT, DEBUG_PORT);
                     if (dbgEndPt != null) {
                         role.setDebuggingEndpoint(dbgEndPt);
                         role.setStartSuspended(false);

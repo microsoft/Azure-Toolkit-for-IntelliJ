@@ -1,17 +1,23 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	 http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.intellij.ui;
 
@@ -23,17 +29,16 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.interopbridges.tools.windowsazure.WindowsAzureInvalidProjectOperationException;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.michaelbaranov.microba.calendar.DatePicker;
-import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
-import com.microsoftopentechnologies.azurecommons.wacommonutil.CerPfxUtil;
-import com.microsoftopentechnologies.azurecommons.wacommonutil.EncUtilHelper;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoft.wacommon.commoncontrols.NewCertificateDialogData;
+import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
+import com.microsoftopentechnologies.azurecommons.wacommonutil.CerPfxUtil;
+import com.microsoftopentechnologies.azurecommons.wacommonutil.EncUtilHelper;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -44,8 +49,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 import static com.microsoft.intellij.AzurePlugin.log;
+import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
 public class WARemoteAccessPanel implements AzureAbstractPanel {
 
@@ -132,8 +137,8 @@ public class WARemoteAccessPanel implements AzureAbstractPanel {
                 remoteChkBtn.setSelected(false);
                 makeAllTextBlank();
             } else {
-        		/*
-        		 * enable remote access and
+                /*
+                 * enable remote access and
         		 * show values given on publish wizard
         		 */
                 remoteChkBtn.setSelected(true);
@@ -147,7 +152,7 @@ public class WARemoteAccessPanel implements AzureAbstractPanel {
                 } catch (WindowsAzureInvalidProjectOperationException e) {
                     log(message("remAccErPwd"), e);
                 }
-                isFrmEncLink =  true;
+                isFrmEncLink = true;
             }
         } else {
             if (remoteChkBtn.isSelected()) {
@@ -355,7 +360,7 @@ public class WARemoteAccessPanel implements AzureAbstractPanel {
     }
 
     /**
-     *  This method will set default values to all fields.
+     * This method will set default values to all fields.
      */
     private void getDefaultValues() {
         try {
@@ -433,7 +438,7 @@ public class WARemoteAccessPanel implements AzureAbstractPanel {
             return new ValidationInfo(message("remAccNameNull"), txtUserName);
         } /*else if (isRemoteEnabled && txtExpiryDate.isEmpty()) {
             return new ValidationInfo(message("remAccExpDateNull"), txtExpiryDate);
-        } */else if (isRemoteEnabled && (!cerFile.exists() || (!newPath.endsWith(".cer")))) {
+        } */ else if (isRemoteEnabled && (!cerFile.exists() || (!newPath.endsWith(".cer")))) {
             return new ValidationInfo(message("remAccInvldPath"), txtPath);
         } else {
             return null;
@@ -520,7 +525,7 @@ public class WARemoteAccessPanel implements AzureAbstractPanel {
                     PluginUtil.displayErrorDialog(message("remAccErTxtTitle"), message("remAccExpDateNull"));
                     return false;
                 } else {
-                    boolean status =  validateExpDate(expDate);
+                    boolean status = validateExpDate(expDate);
                     if (!status) {
                         return false;
                     }
@@ -611,7 +616,7 @@ public class WARemoteAccessPanel implements AzureAbstractPanel {
         try {
             waProjManager = WindowsAzureProjectManager.load(new File(PluginUtil.getModulePath(myModule)));
         } catch (Exception e) {
-            PluginUtil.displayErrorDialog( message("remAccSyntaxErr"), message("proPageErrMsgBox1") + message("proPageErrMsgBox2"));
+            PluginUtil.displayErrorDialog(message("remAccSyntaxErr"), message("proPageErrMsgBox1") + message("proPageErrMsgBox2"));
             log(message("remAccErProjLoad"), e);
         }
     }

@@ -1,53 +1,59 @@
 /**
- * Copyright 2014 Microsoft Open Technologies, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.intellij.runnable;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
+import com.microsoft.intellij.util.PluginUtil;
 import com.microsoftopentechnologies.azurecommons.deploy.tasks.AccountCachingExceptionEvent;
 import com.microsoftopentechnologies.azurecommons.deploy.tasks.LoadingAccoutListener;
 import com.microsoftopentechnologies.azurecommons.deploy.util.PublishData;
-import com.microsoft.intellij.util.PluginUtil;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
 public abstract class AccountActionRunnable implements Runnable, LoadingAccoutListener {
 
-	protected PublishData data;
+    protected PublishData data;
 
-   ProgressIndicator progressIndicator;
-	
-	protected final AtomicBoolean wait = new AtomicBoolean(true);
-	protected final AtomicBoolean error = new AtomicBoolean(false);
-	
-	private int numberOfAccounts = 1;
-	protected Exception exception;
-	protected String errorMessage;
+    ProgressIndicator progressIndicator;
 
-	public abstract void doTask();
+    protected final AtomicBoolean wait = new AtomicBoolean(true);
+    protected final AtomicBoolean error = new AtomicBoolean(false);
 
-	public AccountActionRunnable(PublishData data) {
-		this.data = data;
-	}
-	
-	public void setNumberOfAccounts(int num) {
-		this.numberOfAccounts = num;
-	}
+    private int numberOfAccounts = 1;
+    protected Exception exception;
+    protected String errorMessage;
+
+    public abstract void doTask();
+
+    public AccountActionRunnable(PublishData data) {
+        this.data = data;
+    }
+
+    public void setNumberOfAccounts(int num) {
+        this.numberOfAccounts = num;
+    }
 
     @Override
     public void run() {
@@ -58,7 +64,7 @@ public abstract class AccountActionRunnable implements Runnable, LoadingAccoutLi
         if (error.get()) {
             progressIndicator.cancel();
             PluginUtil.displayErrorDialogInAWTAndLog(message("error"), errorMessage, exception);
-		}
+        }
     }
 
     void setIndicatorText() {
@@ -66,36 +72,36 @@ public abstract class AccountActionRunnable implements Runnable, LoadingAccoutLi
         progressIndicator.setText2("Subscriptions");
     }
 
-	@Override
-	public synchronized void onLoadedSubscriptions() {
-		setWorked(1.0 / (4 * numberOfAccounts));
+    @Override
+    public synchronized void onLoadedSubscriptions() {
+        setWorked(1.0 / (4 * numberOfAccounts));
         progressIndicator.setText2("Storage Services, Cloud Services and Locations");
-	}
+    }
 
-	@Override
-	public void onLoadedStorageServices() {
+    @Override
+    public void onLoadedStorageServices() {
         setWorked(1.0 / (4 * numberOfAccounts));
-	}
+    }
 
-	@Override
-	public void onLoadedHostedServices() {
+    @Override
+    public void onLoadedHostedServices() {
         setWorked(1.0 / (4 * numberOfAccounts));
-	}
+    }
 
-	@Override
-	public void onLoadedLocations() {
+    @Override
+    public void onLoadedLocations() {
         setWorked(1.0 / (4 * numberOfAccounts));
-	}
-	
-	@Override
-	public void onRestAPIError(AccountCachingExceptionEvent e) {
-		wait.set(false);
-		error.set(true);
-		exception = e.getException();
-		errorMessage = e.getMessage();
-	}
-	
-	private synchronized void setWorked(double work) {
+    }
+
+    @Override
+    public void onRestAPIError(AccountCachingExceptionEvent e) {
+        wait.set(false);
+        error.set(true);
+        exception = e.getException();
+        errorMessage = e.getMessage();
+    }
+
+    private synchronized void setWorked(double work) {
         progressIndicator.setFraction(progressIndicator.getFraction() + work);
-	}
+    }
 }

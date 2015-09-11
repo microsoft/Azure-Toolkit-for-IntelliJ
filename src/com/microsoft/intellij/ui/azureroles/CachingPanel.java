@@ -1,17 +1,23 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	 http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.intellij.ui.azureroles;
 
@@ -32,9 +38,6 @@ import com.intellij.util.ui.ColumnInfo;
 import com.intellij.util.ui.ListTableModel;
 import com.intellij.util.ui.table.ComboBoxTableCellEditor;
 import com.interopbridges.tools.windowsazure.*;
-import com.microsoftopentechnologies.azurecommons.roleoperations.WARCachingUtilMethods;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.ui.AzureWizardModel;
 import com.microsoft.intellij.ui.StorageAccountPanel;
@@ -42,6 +45,9 @@ import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
 import com.microsoft.intellij.ui.util.JdkSrvConfig;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.util.PluginUtil;
+import com.microsoftopentechnologies.azurecommons.roleoperations.WARCachingUtilMethods;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
 import org.jdesktop.swingx.JXHyperlink;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -51,9 +57,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
-
 import java.awt.event.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
@@ -185,8 +192,8 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
                     int cacheVal = 0;
                     Boolean isNumber = true;
                     try {
-						/*
-						 * As '%' is allowed in user's input,
+                        /*
+                         * As '%' is allowed in user's input,
 						 * check if '%' is present already
 						 * then ignore '%' and take only numeric value
 						 */
@@ -197,7 +204,7 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
                             txtCache.setText(String.format("%s%s", cacheVal, "%"));
                         }
                     } catch (NumberFormatException ex) {
-						/*
+                        /*
 						 * User has given alphabet
 						 * or special character as input
 						 * for cache memory size.
@@ -561,53 +568,53 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
 
     private final ColumnInfo<WindowsAzureNamedCache, BACKUP_OPTIONS> HIGH_AVAILABILITY =
             new ColumnInfo<WindowsAzureNamedCache, BACKUP_OPTIONS>(message("colBkps")) {
-        public BACKUP_OPTIONS valueOf(WindowsAzureNamedCache object) {
-            if (object.getBackups()) {
-                return BACKUP_OPTIONS.Yes;
-            } else {
-                return BACKUP_OPTIONS.No;
-            }
-        }
+                public BACKUP_OPTIONS valueOf(WindowsAzureNamedCache object) {
+                    if (object.getBackups()) {
+                        return BACKUP_OPTIONS.Yes;
+                    } else {
+                        return BACKUP_OPTIONS.No;
+                    }
+                }
 
-        @Override
-        public TableCellEditor getEditor(final WindowsAzureNamedCache cache) {
-            return ComboBoxTableCellEditor.INSTANCE;
-        }
+                @Override
+                public TableCellEditor getEditor(final WindowsAzureNamedCache cache) {
+                    return ComboBoxTableCellEditor.INSTANCE;
+                }
 
-        @Override
-        public void setValue(WindowsAzureNamedCache cache, BACKUP_OPTIONS modifiedVal) {
-            try {
-                if (modifiedVal.toString().equals(message("cachBckYes"))) {
+                @Override
+                public void setValue(WindowsAzureNamedCache cache, BACKUP_OPTIONS modifiedVal) {
+                    try {
+                        if (modifiedVal.toString().equals(message("cachBckYes"))) {
 				/*
 				 * If user selects backup option
 				 * then check virtual machine instances > 2
 				 * otherwise give warning
 				 */
-                    int vmCnt = 0;
-                    try {
-                        vmCnt = Integer.parseInt(waRole.getInstances());
-                    } catch (Exception e) {
-                        PluginUtil.displayErrorDialogAndLog(message("genErrTitle"), message("vmInstGetErMsg"), e);
-                    }
-                    if (vmCnt < 2) {
+                            int vmCnt = 0;
+                            try {
+                                vmCnt = Integer.parseInt(waRole.getInstances());
+                            } catch (Exception e) {
+                                PluginUtil.displayErrorDialogAndLog(message("genErrTitle"), message("vmInstGetErMsg"), e);
+                            }
+                            if (vmCnt < 2) {
 					/*
 					 * If virtual machine instances < 2
 					 * then set back up to false.
 					 */
-                        cache.setBackups(false);
-                        Messages.showWarningDialog(message("backWarnMsg"), message("backWarnTtl"));
-                    } else {
-                        cache.setBackups(true);
+                                cache.setBackups(false);
+                                Messages.showWarningDialog(message("backWarnMsg"), message("backWarnTtl"));
+                            } else {
+                                cache.setBackups(true);
+                            }
+                        } else if (modifiedVal.toString().equals(message("cachBckNo"))) {
+                            cache.setBackups(false);
+                        }
+                        setModified(true);
+                    } catch (Exception e) {
+                        PluginUtil.displayErrorDialogAndLog(message("cachErrTtl"), message("cachSetErrMsg"), e);
                     }
-                } else if (modifiedVal.toString().equals(message("cachBckNo"))) {
-                    cache.setBackups(false);
                 }
-                setModified(true);
-            } catch (Exception e) {
-                PluginUtil.displayErrorDialogAndLog(message("cachErrTtl"), message("cachSetErrMsg"), e);
-            }
-        }
-    };
+            };
 
     private final ColumnInfo<WindowsAzureNamedCache, EXPIRATION_TYPE> EXPIRATION = new ColumnInfo<WindowsAzureNamedCache, EXPIRATION_TYPE>(message("colExp")) {
         public EXPIRATION_TYPE valueOf(WindowsAzureNamedCache cache) {

@@ -1,29 +1,35 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	 http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.tasks;
 
-import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventArgs;
-import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventListener;
-import com.microsoftopentechnologies.azurecommons.exception.RestAPIException;
-import com.microsoft.intellij.deploy.DeploymentManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.microsoft.intellij.AzurePlugin;
+import com.microsoft.intellij.deploy.DeploymentManager;
 import com.microsoft.wacommon.utils.WACommonException;
+import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventArgs;
+import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventListener;
+import com.microsoftopentechnologies.azurecommons.exception.RestAPIException;
 import org.jetbrains.annotations.NotNull;
 
 import static com.microsoft.intellij.AzurePlugin.log;
@@ -56,9 +62,8 @@ public class WindowsAzureUndeploymentTask extends Task.Backgroundable {
         AzurePlugin.depEveList.add(undeployListnr);
 
         try {
-            DeploymentManager.getInstance().undeploy(serviceName, deploymentName,deploymentState);
-        }
-        catch (RestAPIException e) {
+            DeploymentManager.getInstance().undeploy(serviceName, deploymentName, deploymentState);
+        } catch (RestAPIException e) {
             log(message("error"), e);
         } catch (InterruptedException e) {
             log(message("error"), e);

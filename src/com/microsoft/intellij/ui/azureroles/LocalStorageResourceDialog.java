@@ -1,3 +1,24 @@
+/**
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.microsoft.intellij.ui.azureroles;
 
 import com.intellij.openapi.ui.DialogWrapper;
@@ -7,9 +28,9 @@ import com.interopbridges.tools.windowsazure.WindowsAzureInvalidProjectOperation
 import com.interopbridges.tools.windowsazure.WindowsAzureLocalStorage;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.interopbridges.tools.windowsazure.WindowsAzureRole;
+import com.microsoft.intellij.util.PluginUtil;
 import com.microsoftopentechnologies.azurecommons.exception.AzureCommonsException;
 import com.microsoftopentechnologies.azurecommons.roleoperations.LocalStrgResDialogUtilMethods;
-import com.microsoft.intellij.util.PluginUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -27,7 +48,7 @@ public class LocalStorageResourceDialog extends DialogWrapper {
 
     private WindowsAzureRole waRole;
     private int maxSize;
-    private Map<String,WindowsAzureLocalStorage> lclStgMap;
+    private Map<String, WindowsAzureLocalStorage> lclStgMap;
     private String resName;
     private boolean isResEdit;
 
@@ -59,7 +80,6 @@ public class LocalStorageResourceDialog extends DialogWrapper {
     /**
      * Populates the resource name and value text fields with the corresponding
      * attributes of local storage resource selected for editing.
-     *
      */
     private void populateData() {
         try {
@@ -91,7 +111,7 @@ public class LocalStorageResourceDialog extends DialogWrapper {
         boolean retVal = true;
         try {
             if (isResEdit && txtVar.getText().equalsIgnoreCase(lclStgMap.get(resName).getPathEnv())) {
-                retVal =  isValidName(txtResource.getText()) && isValidSize(txtSize.getText());
+                retVal = isValidName(txtResource.getText()) && isValidSize(txtSize.getText());
             } else {
                 retVal = isValidName(txtResource.getText()) && isValidSize(txtSize.getText()) && isValidPath(txtVar.getText());
             }
@@ -146,7 +166,7 @@ public class LocalStorageResourceDialog extends DialogWrapper {
                 PluginUtil.displayErrorDialog(message("lclStgSizeErrTtl"), message("lclStgSizeErrMsg"));
                 isValidSize = false;
             } else if (value > maxSize) {
-                int choice = Messages.showYesNoDialog(String.format("%s%s%s", message("lclStgMxSizeMsg1") , maxSize, message("lclStgMxSizeMsg2")),
+                int choice = Messages.showYesNoDialog(String.format("%s%s%s", message("lclStgMxSizeMsg1"), maxSize, message("lclStgMxSizeMsg2")),
                         message("lclStgMxSizeTtl"), Messages.getQuestionIcon());
                 /*
                  * If user selects No
