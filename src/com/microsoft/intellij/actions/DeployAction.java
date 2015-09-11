@@ -1,25 +1,52 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *	 http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 package com.microsoft.intellij.actions;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindowId;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.interopbridges.tools.windowsazure.*;
+import com.microsoft.intellij.AzurePlugin;
+import com.microsoft.intellij.AzureSettings;
+import com.microsoft.intellij.deploy.DeploymentManager;
+import com.microsoft.intellij.module.AzureModuleType;
+import com.microsoft.intellij.ui.DeployWizardDialog;
+import com.microsoft.intellij.ui.JdkServerPanel;
+import com.microsoft.intellij.ui.PfxPwdDialog;
+import com.microsoft.intellij.ui.messages.AzureBundle;
+import com.microsoft.intellij.util.AntHelper;
+import com.microsoft.intellij.util.PluginUtil;
+import com.microsoft.intellij.wizards.WizardCacheManager;
+import com.microsoft.wacommon.utils.WACommonException;
+import com.microsoft.windowsazure.management.compute.models.HostedServiceListResponse;
+import com.microsoft.windowsazure.management.compute.models.ServiceCertificateListResponse;
+import com.microsoft.windowsazure.management.storage.models.StorageAccountCreateParameters;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventArgs;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventListener;
 import com.microsoftopentechnologies.azurecommons.deploy.model.AutoUpldCmpnts;
@@ -35,35 +62,14 @@ import com.microsoftopentechnologies.azurecommons.wacommonutil.CerPfxUtil;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.EncUtilHelper;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.PreferenceSetUtil;
 import com.microsoftopentechnologies.azuremanagementutil.model.StorageService;
-import com.microsoft.intellij.deploy.*;
-import com.microsoft.intellij.ui.JdkServerPanel;
-import com.microsoft.intellij.util.AntHelper;
-import com.microsoft.intellij.wizards.WizardCacheManager;
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
-import com.interopbridges.tools.windowsazure.*;
-import com.microsoft.windowsazure.management.compute.models.HostedServiceListResponse;
-import com.microsoft.windowsazure.management.compute.models.ServiceCertificateListResponse;
-import com.microsoft.windowsazure.management.storage.models.StorageAccountCreateParameters;
-import com.microsoft.intellij.AzurePlugin;
-import com.microsoft.intellij.AzureSettings;
-import com.microsoft.intellij.module.AzureModuleType;
-import com.microsoft.intellij.ui.DeployWizardDialog;
-import com.microsoft.intellij.ui.PfxPwdDialog;
-import com.microsoft.intellij.ui.messages.AzureBundle;
-import com.microsoft.intellij.util.PluginUtil;
-import com.microsoft.wacommon.utils.WACommonException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.*;
 
-import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 import static com.microsoft.intellij.AzurePlugin.log;
+import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
 public class DeployAction extends AnAction {
     private static final String BASE_PATH = "${basedir}";
@@ -109,7 +115,7 @@ public class DeployAction extends AnAction {
                         String name = cert.getName();
                         Boolean invokePfxDlg = true;
                     /*
-					 * If Remote access is enabled and
+                     * If Remote access is enabled and
 					 * using sample certificate, then don't ask PFX file path
 					 * and password. Just assign default values.
 					 */
@@ -127,15 +133,15 @@ public class DeployAction extends AnAction {
                                 CertificateUpload object = new CertificateUpload(name, cert.getFingerPrint(), inputDlg.getPfxPath(), inputDlg.getPwd());
                                 certUploadList.add(object);
                             } else {
-							/*
-							 * Just return to publish wizard.
+                            /*
+                             * Just return to publish wizard.
 							 * No need to save any information.
 							 */
                                 return;
                             }
                         }
                     }
-                    deployDialog.fireConfigurationEvent(new ConfigurationEventArgs(this,ConfigurationEventArgs.CERTIFICATES,
+                    deployDialog.fireConfigurationEvent(new ConfigurationEventArgs(this, ConfigurationEventArgs.CERTIFICATES,
                             new CertificateUploadList(certUploadList)));
                 }
 //            showBusy(true);
@@ -335,7 +341,7 @@ public class DeployAction extends AnAction {
             AzurePlugin.addDeploymentEventListener(deployListnr);
             AzurePlugin.depEveList.add(deployListnr);
 
-             doTask();
+            doTask();
 //            Thread thread = doAsync();
 
 //            while (wait.get() == true) {
@@ -398,6 +404,7 @@ public class DeployAction extends AnAction {
      * If remote desktop is enabled
      * then method checks whether
      * its using sample certificate or not.
+     *
      * @param waProjManager
      * @return
      */
@@ -429,6 +436,7 @@ public class DeployAction extends AnAction {
     /**
      * Configure or remove remote access settings
      * according to user name provided by user.
+     *
      * @param waProjManager
      */
     private boolean handleRDPSettings(WindowsAzureProjectManager waProjManager, DeployWizardDialog deployDialog, String modulePath) {
@@ -519,6 +527,7 @@ public class DeployAction extends AnAction {
      * uploaded to cloud service by comparing
      * certificates present in particular cloud service
      * with the certificates configured in selected project.
+     *
      * @param projMngr
      * @return
      */
@@ -535,7 +544,7 @@ public class DeployAction extends AnAction {
             for (int i = 0; i < roleList.size(); i++) {
                 WindowsAzureRole role = roleList.get(i);
                 Map<String, WindowsAzureCertificate> pmlCertList = role.getCertificates();
-                for (Iterator<Map.Entry<String, WindowsAzureCertificate>> iterator = pmlCertList.entrySet().iterator(); iterator.hasNext();) {
+                for (Iterator<Map.Entry<String, WindowsAzureCertificate>> iterator = pmlCertList.entrySet().iterator(); iterator.hasNext(); ) {
                     WindowsAzureCertificate pmlCert = iterator.next().getValue();
 					/*
 					 * No certificate present on cloud as REST API returned null
@@ -576,6 +585,7 @@ public class DeployAction extends AnAction {
      * been added to certToUpload list.
      * To avoid unnecessary PFX password prompt
      * invocation.
+     *
      * @param certToUpload
      * @param pmlCert
      * @return
@@ -601,6 +611,7 @@ public class DeployAction extends AnAction {
      * Also method remembers which components has been updated
      * so that after project build
      * they can be restored to original state.
+     *
      * @param projMngr
      * @return
      */
@@ -701,6 +712,7 @@ public class DeployAction extends AnAction {
      * Method restores components which are updated before build
      * to original state i.e. again updates cloudurl to "auto"
      * and removes cloudkey attribute.
+     *
      * @param projMngr
      * @return
      */
@@ -737,6 +749,7 @@ public class DeployAction extends AnAction {
      * Method restores caching properties which are updated before build
      * to original state i.e. again updates storage account name to "auto"
      * and removes key property.
+     *
      * @param projMngr
      * @return
      */

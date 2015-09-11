@@ -1,17 +1,23 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.microsoft.intellij.ui.azureroles;
@@ -22,13 +28,16 @@ import com.interopbridges.tools.windowsazure.WindowsAzureEndpoint;
 import com.interopbridges.tools.windowsazure.WindowsAzureEndpointType;
 import com.interopbridges.tools.windowsazure.WindowsAzureInvalidProjectOperationException;
 import com.interopbridges.tools.windowsazure.WindowsAzureRole;
+import com.microsoft.intellij.util.PluginUtil;
 import com.microsoftopentechnologies.azurecommons.roleoperations.WAEndpointDialogUtilMethods;
 import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
-import com.microsoft.intellij.util.PluginUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
@@ -92,8 +101,8 @@ public class EndpointDialog extends DialogWrapper {
                 txtPublicPortRangeEnd.setText(portRange[1]);
             }
         } else {
-        	/*
-        	 * Add Endpoint scenario.
+            /*
+             * Add Endpoint scenario.
         	 * Endpoint type is Internal for the first time.
         	 */
             txtPrivatePort.setText(AUTO);
@@ -128,7 +137,7 @@ public class EndpointDialog extends DialogWrapper {
                 WindowsAzureEndpointType endpointType = (WindowsAzureEndpointType) comboType.getSelectedItem();
                 String portTxt = txtPrivatePort.getText();
                 enableControlsDependingOnEnpointType(endpointType);
-        		/*
+                /*
         		 * auto not allowed for InstanceInput endpoint,
         		 * hence clear it.
         		 */
@@ -143,7 +152,6 @@ public class EndpointDialog extends DialogWrapper {
             }
         };
     }
-
 
 
     private void focusLostMethod() {
@@ -186,7 +194,7 @@ public class EndpointDialog extends DialogWrapper {
             lblPublicPortRangeSeparator.setEnabled(false);
             txtPublicPortRangeEnd.setEnabled(false);
             txtPublicPortRangeEnd.setText("");
-        }  else {
+        } else {
             // Instance input point selected
             // Handling for private port
             lblPrivatePort.setText(message("adRolPrivatePort"));
@@ -233,7 +241,7 @@ public class EndpointDialog extends DialogWrapper {
             		 */
                     if (isValidName) {
                         if (endPtType.equals(WindowsAzureEndpointType.InstanceInput) || endPtType.equals(WindowsAzureEndpointType.Internal)) {
-                            if(WAEndpointDialogUtilMethods.isDashPresent(endPtType, txtPrivatePort.getText(), txtPrivatePortRangeEnd.getText(),
+                            if (WAEndpointDialogUtilMethods.isDashPresent(endPtType, txtPrivatePort.getText(), txtPrivatePortRangeEnd.getText(),
                                     txtPublicPort.getText(), txtPublicPortRangeEnd.getText())) {
                                 PluginUtil.displayErrorDialog(message("dlgInvldPort"), message("portRangeErrMsg"));
                                 return;

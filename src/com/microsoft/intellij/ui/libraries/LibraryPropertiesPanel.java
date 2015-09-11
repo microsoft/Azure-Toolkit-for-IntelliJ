@@ -1,3 +1,24 @@
+/**
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.microsoft.intellij.ui.libraries;
 
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -6,14 +27,14 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.microsoftopentechnologies.azurecommons.wacommonutil.CerPfxUtil;
-import com.microsoftopentechnologies.azuremanagementutil.util.Base64;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.ui.AzureAbstractPanel;
 import com.microsoft.intellij.ui.NewCertificateDialog;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoft.wacommon.commoncontrols.NewCertificateDialogData;
+import com.microsoftopentechnologies.azurecommons.wacommonutil.CerPfxUtil;
+import com.microsoftopentechnologies.azuremanagementutil.util.Base64;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -83,10 +104,10 @@ class LibraryPropertiesPanel implements AzureAbstractPanel {
             try {
 //                com.intellij.psi.search.PsiShortNamesCache.getInstance(module.getProject()).getFilesByName("web.xml");
                 ACSFilterHandler editHandler = new ACSFilterHandler(String.format("%s%s%s", PluginUtil.getModulePath(module), File.separator, message("xmlPath")));
-                Map<String,String> paramMap = editHandler.getAcsFilterParams();
+                Map<String, String> paramMap = editHandler.getAcsFilterParams();
                 acsTxt.setText(paramMap.get(message("acsAttr")));
                 relTxt.setText(paramMap.get(message("relAttr")));
-                if (paramMap.get(message("certAttr")) != null ) {
+                if (paramMap.get(message("certAttr")) != null) {
                     certTxt.setText(paramMap.get(message("certAttr")));
                     certInfoTxt.setText(getCertInfo(certTxt.getText()));
                 } else {
@@ -113,7 +134,7 @@ class LibraryPropertiesPanel implements AzureAbstractPanel {
                 dialog.show();
                 if (dialog.isOK()) {
                     String certPath = data.getCerFilePath();
-                    certTxt.setText(certPath != null ? certPath.replace('\\', '/') : certPath );
+                    certTxt.setText(certPath != null ? certPath.replace('\\', '/') : certPath);
                     certInfoTxt.setText(getCertInfo(certTxt.getText()));
                 }
             }
@@ -212,29 +233,29 @@ class LibraryPropertiesPanel implements AzureAbstractPanel {
     }
 
     public ValidationInfo doValidate() {
-        boolean isEdit  = isEdit();
+        boolean isEdit = isEdit();
         StringBuilder errorMessage = new StringBuilder();
 
         // Display error if acs login page URL is null. Applicable for first time and edit scenarios.
-        if(acsTxt.getText().isEmpty() || acsTxt.getText().equalsIgnoreCase(message("acsTxt")))
+        if (acsTxt.getText().isEmpty() || acsTxt.getText().equalsIgnoreCase(message("acsTxt")))
             errorMessage.append(message("acsTxtErr")).append("\n");
 
         // Display error if relying part realm is null. Applicable for first time and edit scenarios.
-        if(relTxt.getText().isEmpty())
+        if (relTxt.getText().isEmpty())
             errorMessage.append(message("relTxtErr")).append("\n");
 
         // if certificate location does not end with .cer then display error
-        if(!certTxt.getText().isEmpty() &&  !certTxt.getText().toLowerCase().endsWith(".cer"))
+        if (!certTxt.getText().isEmpty() && !certTxt.getText().toLowerCase().endsWith(".cer"))
             errorMessage.append(message("certTxtInvalidExt")).append("\n");
 
         // Display error if cert location is empty for first time and for edit scenarios if
         // embedded cert option is not selected
-        if((!isEdit && certTxt.getText().isEmpty()) || (isEdit && certTxt.getText().isEmpty() && !embedCertCheck.isSelected()))
+        if ((!isEdit && certTxt.getText().isEmpty()) || (isEdit && certTxt.getText().isEmpty() && !embedCertCheck.isSelected()))
             errorMessage.append(message("certTxtErr")).append("\n");
 
         // For first time , if embedded cert option is selected , display error if file does not exist at source
         if (!isEdit && !certTxt.getText().isEmpty() && embedCertCheck.isSelected() == true) {
-            if(!new File(CerPfxUtil.getCertificatePath(certTxt.getText())).exists()) {
+            if (!new File(CerPfxUtil.getCertificatePath(certTxt.getText())).exists()) {
                 errorMessage.append(message("acsNoValidCert")).append("\n");
             }
         }

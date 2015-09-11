@@ -1,24 +1,31 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.microsoft.intellij.util;
 
 import com.intellij.ide.DataManager;
 import com.intellij.ide.projectView.impl.ProjectRootsUtil;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -33,6 +40,7 @@ import com.interopbridges.tools.windowsazure.WindowsAzureRole;
 import com.interopbridges.tools.windowsazure.WindowsAzureRoleComponentImportMethod;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.wacommon.utils.WACommonException;
+
 import java.io.File;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
@@ -63,8 +71,9 @@ public class PluginUtil {
 
     /**
      * This method will display the error message box when any error occurs.It takes two parameters
-     *  @param title     the text or title of the window.
-     * @param message   the message which is to be displayed
+     *
+     * @param title   the text or title of the window.
+     * @param message the message which is to be displayed
      */
     public static void displayErrorDialog(String title, String message) {
         Messages.showErrorDialog(message, title);
@@ -112,7 +121,7 @@ public class PluginUtil {
         String libLocation;
         try {
             String pluginInstLoc = String.format("%s%s%s", PathManager.getPluginsPath(), File.separator, AzurePlugin.COMMON_LIB_PLUGIN_ID);
-            libLocation = String.format(pluginInstLoc + "%s%s", File.separator,"lib");
+            libLocation = String.format(pluginInstLoc + "%s%s", File.separator, "lib");
             File file = new File(String.format(libLocation + "%s%s", File.separator, message("sdkLibBaseJar")));
             if (!file.exists()) {
                 throw new WACommonException(message("SDKLocErrMsg"));
@@ -146,6 +155,7 @@ public class PluginUtil {
     /**
      * This method find the absolute path from
      * relative path.
+     *
      * @param path : relative path
      * @return absolute path
      */
@@ -164,6 +174,7 @@ public class PluginUtil {
     /**
      * This method returns the deployment name of any component
      * it also prepares the name if name is not specified.
+     *
      * @param path
      * @param method
      * @param asName

@@ -1,26 +1,27 @@
 /**
- * Copyright 2014 Microsoft Open Technologies Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Copyright (c) Microsoft Corporation
+ * <p/>
+ * All rights reserved.
+ * <p/>
+ * MIT License
+ * <p/>
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
+ * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * <p/>
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of
+ * the Software.
+ * <p/>
+ * THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
+ * THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.microsoft.intellij.ui.util;
 
-import com.microsoftopentechnologies.azurecommons.deploy.util.PublishData;
-import com.microsoftopentechnologies.azurecommons.roleoperations.JdkSrvConfigUtilMethods;
-import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
-import com.microsoftopentechnologies.azuremanagementutil.model.Subscription;
-import com.microsoft.intellij.wizards.WizardCacheManager;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
@@ -32,20 +33,24 @@ import com.intellij.util.Consumer;
 import com.interopbridges.tools.windowsazure.WindowsAzureInvalidProjectOperationException;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.microsoft.intellij.util.PluginUtil;
+import com.microsoft.intellij.wizards.WizardCacheManager;
+import com.microsoftopentechnologies.azurecommons.deploy.util.PublishData;
+import com.microsoftopentechnologies.azurecommons.roleoperations.JdkSrvConfigUtilMethods;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
+import com.microsoftopentechnologies.azuremanagementutil.model.Subscription;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.*;
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
-import static com.microsoft.intellij.AzurePlugin.log;
 
 public class UIUtils {
 
@@ -104,17 +109,12 @@ public class UIUtils {
     /**
      * Method validates remote access password.
      *
-     * @param isPwdChanged
-     *            : flag to monitor whether password is changed or not
-     * @param txtPassword
-     *            : Object of password text box
-     * @param waProjManager
-     *            : WindowsAzureProjectManager object
-     * @param isRAPropPage
-     *            : flag to monitor who has called this method Encryption link
-     *            or normal property page call.
-     * @param txtConfirmPassword
-     *            : Object of confirm password text box
+     * @param isPwdChanged       : flag to monitor whether password is changed or not
+     * @param txtPassword        : Object of password text box
+     * @param waProjManager      : WindowsAzureProjectManager object
+     * @param isRAPropPage       : flag to monitor who has called this method Encryption link
+     *                           or normal property page call.
+     * @param txtConfirmPassword : Object of confirm password text box
      */
     public static void checkRdpPwd(boolean isPwdChanged, JPasswordField txtPassword,
                                    WindowsAzureProjectManager waProjManager, boolean isRAPropPage,
@@ -126,8 +126,8 @@ public class UIUtils {
                         + "(?=^.{6,}$)(?=.*[A-Z])(?=.*[a-z])(?!.*\\s)(?=.*\\p{Punct}).*$");
         Matcher match = pattern.matcher(String.valueOf(txtPassword.getPassword()));
         try {
-			/*
-			 * checking if user has changed the password and that field is not
+            /*
+             * checking if user has changed the password and that field is not
 			 * blank then check for strong password else set the old password.
 			 */
             if (isPwdChanged) {
@@ -138,7 +138,7 @@ public class UIUtils {
                 }
             } else {
                 String pwd = waProjManager.getRemoteAccessEncryptedPassword();
-				/*
+                /*
 				 * Remote access property page accessed via context menu
 				 */
                 if (isRAPropPage) {
@@ -160,6 +160,7 @@ public class UIUtils {
     /**
      * Method extracts data from publish settings file
      * and create Publish data object.
+     *
      * @param file
      * @return
      */
@@ -182,6 +183,7 @@ public class UIUtils {
     /**
      * Method populates subscription names into subscription
      * combo box.
+     *
      * @param combo
      * @return
      */
@@ -205,6 +207,7 @@ public class UIUtils {
     /**
      * Set current subscription and publish data
      * as per subscription selected in combo box.
+     *
      * @param combo
      * @return
      */
@@ -226,6 +229,7 @@ public class UIUtils {
     /**
      * Method populates storage account name associated
      * with the component's access key.
+     *
      * @param key
      * @param combo
      */
@@ -236,6 +240,7 @@ public class UIUtils {
     /**
      * Select item from combo box as per item name.
      * By finding out selection index as per name.
+     *
      * @param combo
      * @param name
      * @return
