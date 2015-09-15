@@ -200,7 +200,7 @@
   
   <target name="compile.module.azure-toolkit-for-intellij.production" depends="register.custom.compilers" description="Compile module azure-toolkit-for-intellij; production classes">
     <mkdir dir="${azure-toolkit-for-intellij.output.dir}"/>
-    <javac2 destdir="${azure-toolkit-for-intellij.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac2 destdir="${azure-toolkit-for-intellij.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${jdk.home}/bin/javac">
       <compilerarg line="${compiler.args.azure-toolkit-for-intellij}"/>
       <bootclasspath refid="azure-toolkit-for-intellij.module.bootclasspath"/>
       <classpath refid="azure-toolkit-for-intellij.module.production.classpath"/>
