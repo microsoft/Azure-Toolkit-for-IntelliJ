@@ -77,7 +77,7 @@ public class RunInEmulatorAction extends AnAction {
                 } else {
                     // show server message dialog
                     int optionDialog = JOptionPane.showOptionDialog(null,
-                            message("noLocalServerMsg", roleWithoutLocalServer.getName()),
+                            String.format(message("noLocalServerMsg"), roleWithoutLocalServer.getName()),
                             errorTitle,
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.QUESTION_MESSAGE,
@@ -91,13 +91,13 @@ public class RunInEmulatorAction extends AnAction {
             } else {
                 // show JDK message dialog
                 int optionDialog = JOptionPane.showOptionDialog(null,
-                        message("noLocalJDKMsg", roleWithoutLocalJdk.getName()),
-                        errorTitle,
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null,
-                        new String[]{"Yes", "No"},
-                        null);
+                        String.format(message("noLocalJDKMsg"), roleWithoutLocalJdk.getName()),
+                                errorTitle,
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                new String[]{"Yes", "No"},
+                                null);
                 if (optionDialog == JOptionPane.YES_OPTION) {
                     openRoleProperties(module, roleWithoutLocalJdk);
                 }
