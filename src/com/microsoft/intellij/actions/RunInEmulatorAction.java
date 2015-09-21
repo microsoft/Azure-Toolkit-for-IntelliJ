@@ -85,7 +85,7 @@ public class RunInEmulatorAction extends AnAction {
                             new String[]{"Yes", "No"},
                             null);
                     if (optionDialog == JOptionPane.YES_OPTION) {
-                        openRoleProperties(module, roleWithoutLocalServer);
+                        openRoleProperties(module, waProjManager, roleWithoutLocalServer);
                     }
                 }
             } else {
@@ -99,7 +99,7 @@ public class RunInEmulatorAction extends AnAction {
                                 new String[]{"Yes", "No"},
                                 null);
                 if (optionDialog == JOptionPane.YES_OPTION) {
-                    openRoleProperties(module, roleWithoutLocalJdk);
+                    openRoleProperties(module, waProjManager, roleWithoutLocalJdk);
                 }
             }
         } catch (Exception e) {
@@ -114,16 +114,10 @@ public class RunInEmulatorAction extends AnAction {
         event.getPresentation().setEnabled(module != null && AzureModuleType.AZURE_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE)));
     }
 
-    private void openRoleProperties(Module module, WindowsAzureRole role) {
-        WindowsAzureProjectManager projMngr;
-        try {
-            projMngr = WindowsAzureProjectManager.load(new File(PluginUtil.getModulePath(module)));
-            if (role != null) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(module.getProject(),
-                        new ConfigurableGroup[]{new RoleConfigurablesGroup(module, projMngr, role, false)});
-            }
-        } catch (WindowsAzureInvalidProjectOperationException e) {
-            log(message("error"), e);
+    private void openRoleProperties(Module module, WindowsAzureProjectManager projMngr, WindowsAzureRole role) {
+        if (role != null) {
+            ShowSettingsUtil.getInstance().showSettingsDialog(module.getProject(),
+                    new ConfigurableGroup[]{new RoleConfigurablesGroup(module, projMngr, role, false)});
         }
     }
 
