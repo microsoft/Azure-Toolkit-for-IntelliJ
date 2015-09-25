@@ -44,7 +44,7 @@ import java.util.List;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
-public class StorageAccountPanel implements AzureAbstractPanel {
+public class StorageAccountPanel implements AzureAbstractConfigurablePanel {
     private static final String DISPLAY_NAME = "Storage Accounts";
     private JPanel contentPane;
 
@@ -205,6 +205,15 @@ public class StorageAccountPanel implements AzureAbstractPanel {
             return ((StorageAccountTableModel) accountsTable.getModel()).getAccountNameAtIndex(accountsTable.getSelectedRow());
         }
         return null;
+    }
+
+    @Override
+    public boolean isModified() {
+        return false;
+    }
+
+    @Override
+    public void reset() {
     }
 
     private static class StorageAccountTableModel extends AbstractTableModel {

@@ -27,6 +27,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
+import com.microsoft.intellij.ui.AzureAbstractConfigurablePanel;
 import com.microsoft.intellij.ui.AzureAbstractPanel;
 import com.microsoft.intellij.ui.ServiceEndpointsPanel;
 import com.microsoft.intellij.ui.StorageAccountPanel;
@@ -103,9 +104,9 @@ public class AzureConfigurable extends SearchableConfigurable.Parent.Abstract im
     }
 
     public class AzureAbstractConfigurable implements SearchableConfigurable, Configurable.NoScroll, OptionsContainingConfigurable {
-        private AzureAbstractPanel myPanel;
+        private AzureAbstractConfigurablePanel myPanel;
 
-        public AzureAbstractConfigurable(AzureAbstractPanel myPanel) {
+        public AzureAbstractConfigurable(AzureAbstractConfigurablePanel myPanel) {
             this.myPanel = myPanel;
         }
 
@@ -134,17 +135,19 @@ public class AzureConfigurable extends SearchableConfigurable.Parent.Abstract im
 
         @Override
         public boolean isModified() {
-            return false;
+            return myPanel.isModified();
         }
 
         @Override
         public void apply() throws ConfigurationException {
-
+            if (!myPanel.doOKAction()) {
+                throw new ConfigurationException(message("setPrefErMsg"), message("errTtl"));
+            }
         }
 
         @Override
         public void reset() {
-
+            myPanel.reset();
         }
 
         @Override
