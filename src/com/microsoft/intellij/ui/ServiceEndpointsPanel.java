@@ -21,7 +21,15 @@
  */
 package com.microsoft.intellij.ui;
 
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.actionSystem.DataKeys;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ValidationInfo;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.PreferenceSetUtil;
@@ -31,6 +39,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
+import java.io.IOException;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
@@ -107,13 +117,23 @@ public class ServiceEndpointsPanel implements AzureAbstractConfigurablePanel {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                JdkSrvConfig.custLinkListener(
-//                        Messages.edtPrefTtl,
-//                        Messages.prefFileMsg,
-//                        false,
-//                        getShell(),
-//                        null,
-//                        preferenceFile);
+                final File file = new File(AzurePlugin.prefFilePath);
+                ApplicationManager.getApplication().runWriteAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        final VirtualFile vf = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file);
+                        if (vf != null) {
+                            try {
+                                vf.setWritable(true);
+                                DataContext dataContext = DataManager.getInstance().getDataContext();
+                                Project project = DataKeys.PROJECT.getData(dataContext);
+                                FileEditorManager.getInstance(project).openFile(vf, true);
+                            } catch (IOException ex) {
+                                AzurePlugin.log(message("error"), ex);
+                            }
+                        }
+                    }
+                });
             }
         };
     }
