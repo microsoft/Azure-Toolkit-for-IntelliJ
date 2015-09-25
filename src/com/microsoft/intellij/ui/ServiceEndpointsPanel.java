@@ -34,7 +34,7 @@ import java.awt.event.ItemListener;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
-public class ServiceEndpointsPanel implements AzureAbstractPanel {
+public class ServiceEndpointsPanel implements AzureAbstractConfigurablePanel {
     private static final String DISPLAY_NAME = "Service Endpoints";
     private JPanel contentPane;
 
@@ -70,6 +70,13 @@ public class ServiceEndpointsPanel implements AzureAbstractPanel {
 
     @Override
     public boolean doOKAction() {
+        try {
+            String cmbValue = (String) prefNameCmb.getSelectedItem();
+			PreferenceSetUtil.setPrefDefault(cmbValue,  AzurePlugin.prefFilePath);
+        } catch (Exception e) {
+            PluginUtil.displayErrorDialog(message("errTtl"), message("setPrefErMsg"));
+            return false;
+        }
         return true;
     }
 
@@ -147,5 +154,16 @@ public class ServiceEndpointsPanel implements AzureAbstractPanel {
         } catch (Exception e) {
             PluginUtil.displayErrorDialog(message("errTtl"), message("getPrefErMsg"));
         }
+    }
+
+    @Override
+    public boolean isModified() {
+        return true;
+    }
+
+    @Override
+    public void reset() {
+        setToDefaultName();
+        populateValues();
     }
 }
