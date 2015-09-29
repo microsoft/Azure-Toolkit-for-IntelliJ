@@ -22,18 +22,24 @@
 package com.microsoft.intellij;
 
 import com.intellij.ide.plugins.cl.PluginClassLoader;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.util.PlatformUtilsCore;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.microsoft.intellij.ui.libraries.AzureLibrary;
 import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.WAHelper;
+import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
+import com.microsoftopentechnologies.azurecommons.xmlhandling.DataOperations;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventArgs;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventListener;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.FileUtil;
+import com.microsoftopentechnologies.azurecommons.xmlhandling.ParseXMLUtilMethods;
 import com.microsoftopentechnologies.windowsazure.tools.cspack.Utils;
 
 import javax.swing.event.EventListenerList;
@@ -47,14 +53,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.w3c.dom.Document;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
+
 
 public class AzurePlugin extends AbstractProjectComponent {
     private static final Logger LOG = Logger.getInstance("#com.microsoft.intellij.AzurePlugin");
     public static final String PLUGIN_ID = "azure-toolkit-for-intellij";
     public static final String COMMON_LIB_PLUGIN_ID = "azure-services-explorer-plugin";
-    private static final String COMPONENTSETS_VERSION = "2.7.1"; // todo: temporary fix!
+    public static final String COMPONENTSETS_VERSION = "2.7.1"; // todo: temporary fix!
     private static final String PREFERENCESETS_VERSION = "2.7.1";
     public final static int REST_SERVICE_MAX_RETRY_COUNT = 7;
 
@@ -66,6 +74,7 @@ public class AzurePlugin extends AbstractProjectComponent {
 
     public static File cmpntFile = new File(WAHelper.getTemplateFile(message("cmpntFileName")));
     public static String prefFilePath = WAHelper.getTemplateFile(message("prefFileName"));
+    String dataFile = WAHelper.getTemplateFile(message("dataFileName"));
     public static String pluginFolder = String.format("%s%s%s", PathManager.getPluginsPath(), File.separator, AzurePlugin.PLUGIN_ID);
 
     private static final EventListenerList DEPLOYMENT_EVENT_LISTENERS = new EventListenerList();
@@ -95,11 +104,28 @@ public class AzurePlugin extends AbstractProjectComponent {
                 azureSettings.loadStorage();
                 //this code is for copying componentset.xml in plugins folder
                 copyPluginComponents();
+                clearTempDirectory();
             } catch (Exception e) {
             /* This is not a user initiated task
                So user should not get any exception prompt.*/
                 LOG.error(AzureBundle.message("expErlStrtUp"), e);
             }
+        }
+    }
+
+    /**
+     *  Delete %proj% directory from temporary folder during IntelliJ start
+     *  To fix #2943 : Hang invoking a new Azure project,
+     *  PML does not delete .cspack.jar everytime new azure project is created.
+     *  Hence its necessary to delete %proj% directory when plugin with newer version is installed.
+     * @throws Exception
+     */
+    private void clearTempDirectory() throws Exception {
+        String tmpPath = System.getProperty("java.io.tmpdir");
+        String projPath = String.format("%s%s%s", tmpPath, File.separator, "%proj%");
+        File projFile = new File(projPath);
+        if (projFile != null) {
+            WAEclipseHelperMethods.deleteDirectory(projFile);
         }
     }
 
