@@ -15,5 +15,6 @@
     <orderEntry type="library" name="ProjectManagerLibrary" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="antIntegration" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="org.apache.commons:commons-lang3:3.4" level="project" />
+    <orderEntry type="library" name="com.microsoft.azure:azure-storage:3.0.0" level="project" />
   </component>
 </module>
