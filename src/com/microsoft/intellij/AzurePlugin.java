@@ -22,24 +22,19 @@
 package com.microsoft.intellij;
 
 import com.intellij.ide.plugins.cl.PluginClassLoader;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.util.PlatformUtilsCore;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.microsoft.intellij.ui.libraries.AzureLibrary;
 import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.WAHelper;
 import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
-import com.microsoftopentechnologies.azurecommons.xmlhandling.DataOperations;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventArgs;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventListener;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.FileUtil;
-import com.microsoftopentechnologies.azurecommons.xmlhandling.ParseXMLUtilMethods;
 import com.microsoftopentechnologies.windowsazure.tools.cspack.Utils;
 
 import javax.swing.event.EventListenerList;
@@ -53,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.w3c.dom.Document;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
@@ -74,7 +68,6 @@ public class AzurePlugin extends AbstractProjectComponent {
 
     public static File cmpntFile = new File(WAHelper.getTemplateFile(message("cmpntFileName")));
     public static String prefFilePath = WAHelper.getTemplateFile(message("prefFileName"));
-    String dataFile = WAHelper.getTemplateFile(message("dataFileName"));
     public static String pluginFolder = String.format("%s%s%s", PathManager.getPluginsPath(), File.separator, AzurePlugin.PLUGIN_ID);
 
     private static final EventListenerList DEPLOYMENT_EVENT_LISTENERS = new EventListenerList();
