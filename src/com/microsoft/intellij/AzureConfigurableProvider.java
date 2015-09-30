@@ -35,7 +35,7 @@ public class AzureConfigurableProvider extends ConfigurableProvider {
 
     @Override
     public boolean canCreateConfigurable() {
-        return !AzurePlugin.IS_ANDROID_STUDIO && AzurePlugin.IS_WINDOWS;
+        return !AzurePlugin.IS_ANDROID_STUDIO;
     }
 
     @Nullable
