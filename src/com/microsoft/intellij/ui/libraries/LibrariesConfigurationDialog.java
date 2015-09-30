@@ -114,9 +114,18 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
         if (wizard.isOK()) {
             AzureLibrary azureLibrary = model.getSelectedLibrary();
             final LibrariesContainer.LibraryLevel level = LibrariesContainer.LibraryLevel.MODULE;
+
             AccessToken token = WriteAction.start();
             try {
                 final ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(module).getModifiableModel();
+                for (OrderEntry orderEntry : modifiableModel.getOrderEntries()) {
+                    if (orderEntry instanceof ModuleLibraryOrderEntryImpl
+                            && azureLibrary.getName().equals(((ModuleLibraryOrderEntryImpl) orderEntry).getLibraryName())) {
+                        PluginUtil.displayErrorDialog(message("error"), message("libraryExistsError"));
+                        return;
+                    }
+                }
+
                 Library newLibrary = LibrariesContainerFactory.createContainer(modifiableModel).createLibrary(azureLibrary.getName(), level, new ArrayList<OrderRoot>());
                 if (model.isExported()) {
                     for (OrderEntry orderEntry : modifiableModel.getOrderEntries()) {
