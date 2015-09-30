@@ -41,6 +41,7 @@ import com.intellij.ui.components.JBList;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
 import com.microsoft.intellij.util.PluginUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -96,6 +97,12 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
                         editLibrary();
                     }
                 }).disableUpDownActions().createPanel();
+    }
+
+    @NotNull
+    @Override
+    protected Action[] createActions() {
+        return new Action[]{getOKAction()};
     }
 
     private void addLibrary() {
