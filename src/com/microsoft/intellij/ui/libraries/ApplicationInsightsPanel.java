@@ -228,7 +228,7 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
             Library.ModifiableModel newLibraryModel = newLibrary.getModifiableModel();
             File file = new File(String.format("%s%s%s", AzurePlugin.pluginFolder, File.separator, AzureLibrary.AZURE_LIBRARIES.getLocation()));
             AddLibraryUtility.addLibraryRoot(file, newLibraryModel);
-            AddLibraryUtility.addLibraryFiles(new File(String.format("%s%s%s", AzurePlugin.pluginFolder, File.separator, "lib")), newLibraryModel,
+            AddLibraryUtility.addLibraryFiles(new File(PluginUtil.getAzureLibLocation()), newLibraryModel,
                     AzureLibrary.AZURE_LIBRARIES.getFiles());
             newLibraryModel.commit();
             modifiableModel.commit();
