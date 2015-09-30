@@ -2,7 +2,6 @@
   <library name="azure-sdk">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-core-0.7.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/azure-sdk/activation-1.1.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-management-0.7.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-management-compute-0.7.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-management-media-0.7.0.jar!/" />
@@ -14,7 +13,6 @@
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-media-0.7.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-servicebus-0.7.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-serviceruntime-0.7.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-storage-2.0.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/azure-tracing-util-0.7.0.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/jackson-core-asl-1.9.2.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/azure-sdk/jackson-jaxrs-1.9.2.jar!/" />

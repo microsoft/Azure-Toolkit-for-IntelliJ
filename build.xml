@@ -172,7 +172,6 @@
   </path>
   
   <path id="library.azure-sdk.classpath">
-    <pathelement location="${basedir}/lib/azure-sdk/activation-1.1.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/azure-core-0.7.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/azure-management-0.7.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/azure-management-compute-0.7.0.jar"/>
@@ -185,7 +184,6 @@
     <pathelement location="${basedir}/lib/azure-sdk/azure-media-0.7.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/azure-servicebus-0.7.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/azure-serviceruntime-0.7.0.jar"/>
-    <pathelement location="${basedir}/lib/azure-sdk/azure-storage-2.0.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/azure-tracing-util-0.7.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/jackson-core-asl-1.9.2.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/jackson-jaxrs-1.9.2.jar"/>
@@ -199,7 +197,14 @@
     <pathelement location="${basedir}/lib/azure-sdk/jettison-1.1.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/mail-1.4.5.jar"/>
   </path>
-  
+
+  <path id="library.com.microsoft.azure:azure-storage:3.0.0.classpath">
+    <pathelement location="${path.variable.maven_repository}/com/fasterxml/jackson/core/jackson-core/2.6.0/jackson-core-2.6.0.jar"/>
+    <pathelement location="${path.variable.maven_repository}/com/microsoft/azure/azure-storage/3.0.0/azure-storage-3.0.0.jar"/>
+    <pathelement location="${path.variable.maven_repository}/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar"/>
+    <pathelement location="${path.variable.maven_repository}/org/slf4j/slf4j-api/1.7.12/slf4j-api-1.7.12.jar"/>
+  </path>
+
   <path id="library.azurecommons.classpath">
     <pathelement location="${basedir}/lib/AzureCommons.jar"/>
   </path>
@@ -250,6 +255,7 @@
     <path refid="library.azurecommons.classpath"/>
     <path refid="library..cspack.classpath"/>
     <path refid="library.azure-sdk.classpath"/>
+    <path refid="library.com.microsoft.azure:azure-storage:3.0.0.classpath"/>
     <path refid="library.projectmanagerlibrary.classpath"/>
     <path refid="library.antintegration.classpath"/>
     <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
@@ -267,6 +273,7 @@
     <path refid="library.azurecommons.classpath"/>
     <path refid="library..cspack.classpath"/>
     <path refid="library.azure-sdk.classpath"/>
+    <path refid="library.com.microsoft.azure:azure-storage:3.0.0.classpath"/>
     <path refid="library.projectmanagerlibrary.classpath"/>
     <path refid="library.antintegration.classpath"/>
     <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
@@ -278,6 +285,7 @@
     <path refid="library.azurecommons.classpath"/>
     <path refid="library..cspack.classpath"/>
     <path refid="library.azure-sdk.classpath"/>
+    <path refid="library.com.microsoft.azure:azure-storage:3.0.0.classpath"/>
     <path refid="library.projectmanagerlibrary.classpath"/>
     <path refid="library.antintegration.classpath"/>
     <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
