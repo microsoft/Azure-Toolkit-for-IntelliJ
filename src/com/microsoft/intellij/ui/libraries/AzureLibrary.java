@@ -22,11 +22,11 @@
 package com.microsoft.intellij.ui.libraries;
 
 public class AzureLibrary {
-    public static AzureLibrary ACS_FILTER = new AzureLibrary("Azure Access Control Services Filter (by MS Open Tech)",
+    public static AzureLibrary ACS_FILTER = new AzureLibrary("Azure Access Control Services Filter (by Microsoft)",
             "ACSAuthFilter.jar", new String[]{"ACSAuthFilter.jar"});
-    public static AzureLibrary QPID_CLIENT = new AzureLibrary("Package for Apache Qpid Client Libraries for JMS (by MS Open Tech)",
+    public static AzureLibrary QPID_CLIENT = new AzureLibrary("Package for Apache Qpid Client Libraries for JMS (by Microsoft)",
             "com.microsoftopentechnologies.qpid", new String[]{});
-    public static AzureLibrary AZURE_LIBRARIES = new AzureLibrary("Package for Microsoft Azure Libraries for Java (by MS Open Tech)",
+    public static AzureLibrary AZURE_LIBRARIES = new AzureLibrary("Package for Microsoft Azure Libraries for Java (by Microsoft)",
             "com.microsoftopentechnologies.windowsazure.tools.sdk",
             new String[]{
                     "azure-core-0.7.0.jar",
