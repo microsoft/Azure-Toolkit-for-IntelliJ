@@ -24,6 +24,8 @@ package com.microsoft.intellij;
 import com.intellij.openapi.components.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import com.microsoft.applicationinsights.preference.ApplicationInsightsResource;
+import com.microsoft.applicationinsights.preference.ApplicationInsightsResourceRegistry;
 import com.microsoft.intellij.wizards.WizardCacheManager;
 import com.microsoftopentechnologies.azurecommons.deploy.tasks.LoadingAccoutListener;
 import com.microsoftopentechnologies.azurecommons.deploy.util.PublishData;
@@ -90,6 +92,30 @@ public class AzureSettings implements PersistentStateComponent<AzureSettings.Sta
         }
     }
 
+    public void loadAppInsights() {
+        try {
+            if (myState.appInsights != null) {
+                byte[] data = Base64.decode(myState.appInsights.getBytes());
+                ByteArrayInputStream buffer = new ByteArrayInputStream(data);
+                ObjectInput input = new ObjectInputStream(buffer);
+                try {
+                    ApplicationInsightsResource[] resources = (ApplicationInsightsResource[]) input.readObject();
+                    for (ApplicationInsightsResource resource : resources) {
+                        if (!ApplicationInsightsResourceRegistry.getAppInsightsResrcList().contains(resource)) {
+                            ApplicationInsightsResourceRegistry.getAppInsightsResrcList().add(resource);
+                        }
+                    }
+                } finally {
+                    input.close();
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            // ignore - this happens because class package changed and settings were not updated
+        } catch (Exception e) {
+            log(message("err"), e);
+        }
+    }
+
     public void loadPublishDatas(LoadingAccoutListener listener) {
         try {
             if (myState.publishProfile != null) {
@@ -143,6 +169,32 @@ public class AzureSettings implements PersistentStateComponent<AzureSettings.Sta
         }
     }
 
+    public void saveAppInsights() {
+        try {
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            List<ApplicationInsightsResource> data = ApplicationInsightsResourceRegistry.getAppInsightsResrcList();
+            /*
+			 * Sort list according to application insights resource name.
+			 */
+            Collections.sort(data);
+            ApplicationInsightsResource[] dataArray = new ApplicationInsightsResource[data.size()];
+            int i = 0;
+            for (ApplicationInsightsResource pd1 : data) {
+                dataArray[i] = pd1;
+                i++;
+            }
+            try {
+                output.writeObject(dataArray);
+            } finally {
+                output.close();
+            }
+            myState.appInsights = new String(Base64.encode(buffer.toByteArray()));
+        } catch (IOException e) {
+            log(message("err"), e);
+        }
+    }
+
     public void savePublishDatas() {
         try {
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -175,6 +227,7 @@ public class AzureSettings implements PersistentStateComponent<AzureSettings.Sta
 
     public static class State {
         public String storageAccount;
+        public String appInsights;
         public String publishProfile;
         public Map<String, String> deployCache = new HashMap<String, String>();
     }

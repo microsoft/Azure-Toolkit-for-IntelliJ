@@ -21,15 +21,18 @@
  */
 package com.microsoft.intellij.util;
 
+import com.intellij.openapi.module.*;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.progress.impl.BackgroundableProcessIndicator;
 import com.intellij.openapi.project.Project;
+import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.AzureSettings;
 import com.microsoft.intellij.runnable.AccountActionRunnable;
 import com.microsoft.intellij.runnable.CacheAccountWithProgressBar;
 import com.microsoft.intellij.runnable.LoadAccountWithProgressBar;
+import com.microsoft.intellij.ui.libraries.AILibraryHandler;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.wizards.WizardCacheManager;
 import com.microsoftopentechnologies.azurecommons.deploy.util.PublishData;
@@ -41,6 +44,7 @@ import com.microsoftopentechnologies.azuremanagementutil.model.Subscription;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -147,5 +151,66 @@ public class MethodUtils {
         };
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, new BackgroundableProcessIndicator(task));
         prepareListFromPublishData(project);
+    }
+
+    /**
+     * Method scans all open Maven or Dynamic web projects form workspace
+     * and prepare a list of instrumentation keys which are in use.
+     * @return
+     */
+    public static List<String> getInUseInstrumentationKeys(Project project) {
+        List<String> keyList = new ArrayList<String>();
+        try {
+            Module[] modules = ModuleManager.getInstance(project).getModules();
+            for (Module module : modules) {
+                if (module!= null && module.isLoaded() && ModuleTypeId.JAVA_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE))) {
+                    AILibraryHandler handler = new AILibraryHandler();
+                    String aiXMLFilePath = String.format("%s%s%s", PluginUtil.getModulePath(module), File.separator, message("aiXMLPath"));
+                    if (new File(aiXMLFilePath).exists()) {
+                        handler.parseAIConfXmlPath(aiXMLFilePath);
+                        String key = handler.getAIInstrumentationKey();
+                        if (key != null && !key.isEmpty()) {
+                            keyList.add(key);
+                        }
+                    }
+                }
+            }
+        } catch(Exception ex) {
+            AzurePlugin.log(ex.getMessage(), ex);
+        }
+        return keyList;
+    }
+
+    /**
+     * Method scans all open Maven or Dynamic web projects form workspace
+     * and returns name of project who is using specific key.
+     * @return
+     */
+    public static String getModuleNameAsPerKey(Project project, String keyToRemove) {
+        String name = "";
+        try {
+            Module[] modules = ModuleManager.getInstance(project).getModules();
+            for (Module module : modules) {
+                if (module!= null && module.isLoaded() && ModuleTypeId.JAVA_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE))) {
+                    String aiXMLPath = String.format("%s%s%s", PluginUtil.getModulePath(module), File.separator, message("aiXMLPath"));
+                    String webXMLPath = String.format("%s%s%s", PluginUtil.getModulePath(module), File.separator, message("xmlPath"));
+                    AILibraryHandler handler = new AILibraryHandler();
+                    if (new File(aiXMLPath).exists() && new File(webXMLPath).exists()) {
+                        handler.parseWebXmlPath(webXMLPath);
+                        handler.parseAIConfXmlPath(aiXMLPath);
+                        // if application insights configuration is enabled.
+                        if (handler.isAIWebFilterConfigured()) {
+                            String key = handler.getAIInstrumentationKey();
+                            if (key != null && !key.isEmpty() && key.equals(keyToRemove)) {
+                                return module.getName();
+                            }
+                        }
+                    }
+                }
+            }
+        } catch(Exception ex) {
+            AzurePlugin.log(ex.getMessage(), ex);
+        }
+        return name;
     }
 }

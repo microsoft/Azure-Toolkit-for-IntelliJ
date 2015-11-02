@@ -34,6 +34,7 @@ import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.AntHelper;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoft.wacommon.utils.WACommonException;
+import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.PreferenceSetUtil;
 
 import java.io.File;
@@ -76,6 +77,16 @@ public class BuildPackageAction extends AnAction {
 
     public void update(AnActionEvent event) {
         final Module module = event.getData(LangDataKeys.MODULE);
-        event.getPresentation().setEnabled(module != null && AzureModuleType.AZURE_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE)));
+        boolean value = false;
+        if (module != null) {
+            String modulePath = PluginUtil.getModulePath(module);
+            try {
+                WindowsAzureProjectManager projMngr = WindowsAzureProjectManager.load(new File(modulePath));
+                value = WAEclipseHelperMethods.isFirstPackageWithAuto(projMngr);
+            } catch(Exception ex) {
+                value = false;
+            }
+        }
+        event.getPresentation().setEnabled(module != null && AzureModuleType.AZURE_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE)) && value);
     }
 }

@@ -40,6 +40,7 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
+import com.microsoft.intellij.util.AppInsightsCustomEvent;
 import com.microsoft.intellij.util.PluginUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +58,7 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
     private JBList librariesList;
 
     private List<AzureLibrary> currentLibs;
+    private List<AzureLibrary> tempList;
     private Module module;
 
     public LibrariesConfigurationDialog(Module module, List<AzureLibrary> currentLibs) {
@@ -80,6 +82,7 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
 
     private void createUIComponents() {
         librariesList = new JBList(currentLibs);
+        tempList = new ArrayList(currentLibs);
         librariesPanel = ToolbarDecorator.createDecorator(librariesList)
                 .setAddAction(new AnActionButtonRunnable() {
                     @Override
@@ -146,6 +149,7 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
                 newLibraryModel.commit();
                 modifiableModel.commit();
                 ((DefaultListModel) librariesList.getModel()).addElement(azureLibrary);
+                tempList.add(azureLibrary);
             } catch (Exception ex) {
                 PluginUtil.displayErrorDialogAndLog(message("error"), message("addLibraryError"), ex);
             } finally {
@@ -166,6 +170,7 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
             token.finish();
         }
         ((DefaultListModel) librariesList.getModel()).removeElement(azureLibrary);
+        tempList.remove(azureLibrary);
     }
 
     private void editLibrary() {
@@ -197,5 +202,19 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
         } else {
             PluginUtil.displayInfoDialog("Library not found", "Library was not found");
         }
+    }
+
+    @Override
+    protected void doOKAction() {
+        for (AzureLibrary lib : tempList) {
+            if (!currentLibs.contains(lib)) {
+                if (lib.getName().equalsIgnoreCase(AzureLibrary.AZURE_LIBRARIES.toString())) {
+                    AppInsightsCustomEvent.create("Azure Libraries", AzurePlugin.AZURE_LIBRARIES_VERSION);
+                } else if (lib.getName().equalsIgnoreCase(AzureLibrary.QPID_CLIENT.toString())) {
+                    AppInsightsCustomEvent.create("Apache Qpid", AzurePlugin.QPID_LIBRARIES_VERSION);
+                }
+            }
+        }
+        super.doOKAction();
     }
 }

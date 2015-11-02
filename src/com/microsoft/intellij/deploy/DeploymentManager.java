@@ -31,6 +31,7 @@ import com.interopbridges.tools.windowsazure.*;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.AzureSettings;
 import com.microsoft.intellij.activitylog.ActivityLogToolWindowFactory;
+import com.microsoft.intellij.util.AppInsightsCustomEvent;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoft.intellij.wizards.WizardCacheManager;
 import com.microsoft.wacommon.utils.WACommonException;
@@ -117,6 +118,8 @@ public final class DeploymentManager {
                 notifyProgress(deploymentDesc.getDeploymentId(), startDate, null, 100, OperationStatus.Succeeded, message("deplCompleted"));
                 return;
             }
+            // Publish start event
+            AppInsightsCustomEvent.create(message("startEvent"), "");
 
             // need to improve this check (maybe hostedSerivce.isExisting())?
             if (hostedService.getUri() == null || hostedService.getUri().toString().isEmpty()) { // the hosted service was not yet created.
@@ -228,6 +231,8 @@ public final class DeploymentManager {
                 deploymentURL += serverAppName + "/";
             }
             notifyProgress(deploymentDesc.getDeploymentId(), startDate, deploymentURL, 20, status, deployment.getStatus().toString());
+            // publish success event
+            AppInsightsCustomEvent.create(message("successEvent"), "");
             // RDP prompt will come only on windows
             if (deploymentDesc.isStartRdpOnDeploy() && AzurePlugin.IS_WINDOWS) {
                 String pluginFolder = String.format("%s%s%s", PathManager.getPluginsPath(), File.separator, AzurePlugin.PLUGIN_ID);
@@ -237,6 +242,8 @@ public final class DeploymentManager {
             if (t instanceof ProcessCanceledException) {
                 PluginUtil.displayWarningDialogInAWT(message("interrupt"), message("deploymentInterrupted"));
             } else {
+                // Publish failure event
+                AppInsightsCustomEvent.create(message("failureEvent"), "");
                 String msg = (t.getMessage() != null ? t.getMessage() : "");
                 if (!msg.startsWith(OperationStatus.Failed.toString())) {
                     msg = OperationStatus.Failed.toString() + " : " + msg;
