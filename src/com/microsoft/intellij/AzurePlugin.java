@@ -29,7 +29,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.util.PlatformUtilsCore;
+import com.intellij.util.PlatformUtils;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.microsoft.intellij.ui.libraries.AzureLibrary;
 import com.microsoft.intellij.ui.messages.AzureBundle;
@@ -70,7 +70,7 @@ public class AzurePlugin extends AbstractProjectComponent {
     public final static int REST_SERVICE_MAX_RETRY_COUNT = 7;
 
     public static boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
-    public static boolean IS_ANDROID_STUDIO = "AndroidStudio".equals(PlatformUtilsCore.getPlatformPrefix());
+    public static boolean IS_ANDROID_STUDIO = "AndroidStudio".equals(PlatformUtils.getPlatformPrefix());
 
     private static final String COMPONENTSETS_TYPE = "COMPONENTSETS";
     private static final String PREFERENCESETS_TYPE = "PREFERENCESETS";
