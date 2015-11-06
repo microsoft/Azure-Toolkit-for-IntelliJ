@@ -155,24 +155,27 @@ public class AzurePlugin extends AbstractProjectComponent {
         }
     }
 
-    private void setValues(String dataFile) throws Exception {
+    private void setValues(final String dataFile) throws Exception {
         final Document doc = ParseXMLUtilMethods.parseFile(dataFile);
-        ApplicationManager.getApplication().invokeAndWait(new Runnable() {
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
                 boolean accepted = Messages.showYesNoDialog(message("preferenceQueMsg"), message("preferenceQueTtl"), null) == Messages.YES;
                 DataOperations.updatePropertyValue(doc, message("prefVal"), String.valueOf(accepted));
+
+                DataOperations.updatePropertyValue(doc, message("pluginVersion"), COMPONENTSETS_VERSION);
+                DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                DataOperations.updatePropertyValue(doc, message("instID"), dateFormat.format(new Date()));
+                try {
+                    ParseXMLUtilMethods.saveXMLDocument(dataFile, doc);
+                } catch (Exception ex) {
+                    LOG.error(message("error"), ex);
+                }
+                if (accepted) {
+                    AppInsightsCustomEvent.create(message("telAgrEvtName"), "");
+                }
             }
         }, ModalityState.defaultModalityState());
-
-        DataOperations.updatePropertyValue(doc, message("pluginVersion"), COMPONENTSETS_VERSION);
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
-        DataOperations.updatePropertyValue(doc, message("instID"), dateFormat.format(new Date()));
-        ParseXMLUtilMethods.saveXMLDocument(dataFile, doc);
-        String prefVal = DataOperations.getProperty(dataFile, message("prefVal"));
-        if (prefVal != null && !prefVal.isEmpty() && prefVal.equals("true")) {
-            AppInsightsCustomEvent.create(message("telAgrEvtName"), "");
-        }
     }
 
     /**
