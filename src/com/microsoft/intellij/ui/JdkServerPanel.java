@@ -417,7 +417,7 @@ public class JdkServerPanel {
         jdkChkBoxUnChecked();
         serverPath.addBrowseFolderListener(new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor()) {
             protected void onFileChoosen(@NotNull VirtualFile chosenFile) {
-                super.onFileChoosen(chosenFile);
+                super.onFileChosen(chosenFile);
                 serBrowseBtnListener();
                 modifySrvText(waRole, message("dlNtLblDirSrv"));
                 modified = true;
@@ -434,7 +434,7 @@ public class JdkServerPanel {
         jdkPath.addBrowseFolderListener(new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor()) {
             protected void onFileChoosen(@NotNull VirtualFile chosenFile) {
                 String oldTxt = jdkPath.getText();
-                super.onFileChoosen(chosenFile);
+                super.onFileChosen(chosenFile);
                 String directory = jdkPath.getText();
                 if (directory != null && !directory.equalsIgnoreCase(oldTxt)) {
                     modified = true;
@@ -447,7 +447,7 @@ public class JdkServerPanel {
         serverType.addItemListener(createServerTypePreferenceListener());
         serverPath.addBrowseFolderListener(new TextBrowseFolderListener(FileChooserDescriptorFactory.createSingleFolderDescriptor()) {
             protected void onFileChoosen(@NotNull VirtualFile chosenFile) {
-                super.onFileChoosen(chosenFile);
+                super.onFileChosen(chosenFile);
                 serBrowseBtnListener();
                 modifySrvText(waRole, message("dlNtLblDirSrv"));
                 enforceSameLocalCloudServer();

@@ -27,10 +27,7 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
-import com.microsoft.intellij.ui.AzureAbstractConfigurablePanel;
-import com.microsoft.intellij.ui.AzureAbstractPanel;
-import com.microsoft.intellij.ui.ServiceEndpointsPanel;
-import com.microsoft.intellij.ui.StorageAccountPanel;
+import com.microsoft.intellij.ui.*;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -57,6 +54,8 @@ public class AzureConfigurable extends SearchableConfigurable.Parent.Abstract im
     protected Configurable[] buildConfigurables() {
         myPanels = new ArrayList<Configurable>();
         if (!AzurePlugin.IS_ANDROID_STUDIO) {
+            myPanels.add(new AzureAbstractConfigurable(new AzurePanel()));
+            myPanels.add(new AzureAbstractConfigurable(new AppInsightsMngmtPanel(myProject)));
             myPanels.add(new AzureAbstractConfigurable(new ServiceEndpointsPanel()));
             myPanels.add(new AzureAbstractConfigurable(new StorageAccountPanel(myProject)));
         }

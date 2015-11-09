@@ -32,6 +32,7 @@ import com.interopbridges.tools.windowsazure.*;
 import com.microsoft.intellij.module.AzureModuleBuilder;
 import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.AppCmpntParam;
+import com.microsoft.intellij.util.AppInsightsCustomEvent;
 import com.microsoft.intellij.util.ParseXML;
 import com.microsoft.intellij.util.PluginUtil;
 import com.microsoftopentechnologies.azurecommons.roleoperations.WizardUtilMethods;
@@ -94,6 +95,7 @@ public class AzureWizardDialog extends WizardDialog<AzureWizardModel> {
     protected void doOKAction() {
 //        validateInput();
         if (isOKActionEnabled() && performFinish()) {
+            AppInsightsCustomEvent.create(message("projCrtEvtName"), "");
             super.doOKAction();
         }
     }

@@ -20,21 +20,27 @@
  * SOFTWARE.
  */
 package com.microsoft.intellij;
-
 import com.intellij.ide.plugins.cl.PluginClassLoader;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.util.PlatformUtilsCore;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.util.PlatformUtils;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
 import com.microsoft.intellij.ui.libraries.AzureLibrary;
 import com.microsoft.intellij.ui.messages.AzureBundle;
+import com.microsoft.intellij.util.AppInsightsCustomEvent;
 import com.microsoft.intellij.util.WAHelper;
 import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
+import com.microsoftopentechnologies.azurecommons.xmlhandling.DataOperations;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventArgs;
 import com.microsoftopentechnologies.azurecommons.deploy.DeploymentEventListener;
 import com.microsoftopentechnologies.azurecommons.wacommonutil.FileUtil;
+import com.microsoftopentechnologies.azurecommons.xmlhandling.ParseXMLUtilMethods;
 import com.microsoftopentechnologies.windowsazure.tools.cspack.Utils;
 
 import javax.swing.event.EventListenerList;
@@ -48,6 +54,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.w3c.dom.Document;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
@@ -56,12 +63,14 @@ public class AzurePlugin extends AbstractProjectComponent {
     private static final Logger LOG = Logger.getInstance("#com.microsoft.intellij.AzurePlugin");
     public static final String PLUGIN_ID = "azure-toolkit-for-intellij";
     public static final String COMMON_LIB_PLUGIN_ID = "azure-services-explorer-plugin";
-    public static final String COMPONENTSETS_VERSION = "2.7.1"; // todo: temporary fix!
-    private static final String PREFERENCESETS_VERSION = "2.7.1";
+    public static final String COMPONENTSETS_VERSION = "2.8.0"; // todo: temporary fix!
+    private static final String PREFERENCESETS_VERSION = "2.8.0";
+    public static final String AZURE_LIBRARIES_VERSION = "0.7.0";
+    public static final String QPID_LIBRARIES_VERSION = "0.19.0";
     public final static int REST_SERVICE_MAX_RETRY_COUNT = 7;
 
     public static boolean IS_WINDOWS = System.getProperty("os.name").toLowerCase().indexOf("win") >= 0;
-    public static boolean IS_ANDROID_STUDIO = "AndroidStudio".equals(PlatformUtilsCore.getPlatformPrefix());
+    public static boolean IS_ANDROID_STUDIO = "AndroidStudio".equals(PlatformUtils.getPlatformPrefix());
 
     private static final String COMPONENTSETS_TYPE = "COMPONENTSETS";
     private static final String PREFERENCESETS_TYPE = "PREFERENCESETS";
@@ -73,10 +82,14 @@ public class AzurePlugin extends AbstractProjectComponent {
     private static final EventListenerList DEPLOYMENT_EVENT_LISTENERS = new EventListenerList();
     public static List<DeploymentEventListener> depEveList = new ArrayList<DeploymentEventListener>();
 
+    String dataFile = WAHelper.getTemplateFile(message("dataFileName"));
+
     private final AzureSettings azureSettings;
+    Project project;
 
     public AzurePlugin(Project project) {
         super(project);
+        this.project = project;
         this.azureSettings = AzureSettings.getSafeInstance(project);
     }
 
@@ -97,6 +110,7 @@ public class AzurePlugin extends AbstractProjectComponent {
                 azureSettings.loadStorage();
                 //this code is for copying componentset.xml in plugins folder
                 copyPluginComponents();
+                initializeTelemetry();
                 clearTempDirectory();
             } catch (Exception e) {
             /* This is not a user initiated task
@@ -104,6 +118,64 @@ public class AzurePlugin extends AbstractProjectComponent {
                 LOG.error(AzureBundle.message("expErlStrtUp"), e);
             }
         }
+    }
+
+    private void initializeTelemetry() throws Exception {
+        System.out.println("Plugin location:" + pluginFolder);
+        if (new File(dataFile).exists()) {
+            String version = DataOperations.getProperty(dataFile, message("pluginVersion"));
+            if (version == null || version.isEmpty()) {
+                // proceed with setValues method as no version specified
+                setValues(dataFile);
+            } else {
+                String curVersion = COMPONENTSETS_VERSION;
+                // compare version
+                if (curVersion.equalsIgnoreCase(version)) {
+                    // Case of normal IntelliJ restart
+                    // check preference-value & installation-id exists or not else copy values
+                    String prefValue = DataOperations.getProperty(dataFile, message("prefVal"));
+                    String instID = DataOperations.getProperty(dataFile, message("instID"));
+                    if (prefValue == null || prefValue.isEmpty()) {
+                        setValues(dataFile);
+                    } else if (instID == null || instID.isEmpty()) {
+                        Document doc = ParseXMLUtilMethods.parseFile(dataFile);
+                        DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                        DataOperations.updatePropertyValue(doc, message("instID"), dateFormat.format(new Date()));
+                        ParseXMLUtilMethods.saveXMLDocument(dataFile, doc);
+                    }
+                } else {
+                    // proceed with setValues method. Case of new plugin installation
+                    setValues(dataFile);
+                }
+            }
+        } else {
+            // copy file and proceed with setValues method
+            copyResourceFile(message("dataFileName"), dataFile);
+            setValues(dataFile);
+        }
+    }
+
+    private void setValues(final String dataFile) throws Exception {
+        final Document doc = ParseXMLUtilMethods.parseFile(dataFile);
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                boolean accepted = Messages.showYesNoDialog(message("preferenceQueMsg"), message("preferenceQueTtl"), null) == Messages.YES;
+                DataOperations.updatePropertyValue(doc, message("prefVal"), String.valueOf(accepted));
+
+                DataOperations.updatePropertyValue(doc, message("pluginVersion"), COMPONENTSETS_VERSION);
+                DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+                DataOperations.updatePropertyValue(doc, message("instID"), dateFormat.format(new Date()));
+                try {
+                    ParseXMLUtilMethods.saveXMLDocument(dataFile, doc);
+                } catch (Exception ex) {
+                    LOG.error(message("error"), ex);
+                }
+                if (accepted) {
+                    AppInsightsCustomEvent.create(message("telAgrEvtName"), "");
+                }
+            }
+        }, ModalityState.defaultModalityState());
     }
 
     /**
@@ -120,6 +192,10 @@ public class AzurePlugin extends AbstractProjectComponent {
         if (projFile != null) {
             WAEclipseHelperMethods.deleteDirectory(projFile);
         }
+    }
+
+    private void telemetryAI() {
+        ModuleManager.getInstance(project).getModules();
     }
 
     public String getComponentName() {
