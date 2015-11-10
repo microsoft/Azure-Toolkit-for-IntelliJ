@@ -289,7 +289,7 @@ public class JdkServerPanel {
                 String srvUrl = waRole.getServerCloudURL();
                 if (srvUrl != null && !srvUrl.isEmpty()) {
                     // server auto upload option configured
-                    if (JdkSrvConfigUtilMethods.isServerAutoUploadPrevSelected(waRole)) {
+                    if (JdkSrvConfigUtilMethods.isServerAutoUploadPrevSelected(waRole) || !thirdServerName.isEmpty()) {
                         if (thirdServerName.isEmpty()) {
                             uploadLocalServer.setSelected(true);
                         } else {
@@ -326,6 +326,13 @@ public class JdkServerPanel {
                     }
                     String srvKey = waRole.getServerCloudKey();
                     UIUtils.populateStrgNameAsPerKey(srvKey, storageAccountServer);
+                    if (!thirdServerName.isEmpty()) {
+                        String cldSrc = getThirdPartyServerCloudSrc();
+                        // check if its latest server scenario then set storage account to (none)
+                        if (!cldSrc.isEmpty()) {
+                            storageAccountServer.insertItemAt("(none)", 0);
+                        }
+                    }
                 }
             }
             checkSDKPresenceAndEnableServer();
@@ -1769,11 +1776,42 @@ public class JdkServerPanel {
      * combo box and radio button selection.
      */
     public void updateServerDlURL() {
-        if (isSASelectedForSrv()) {
-            serverUrl.setText(cmbBoxListener(storageAccountServer, serverUrl.getText(), JdkSrvConfig.SRV_TXT));
-        } else if (!customDownloadServer.isSelected()) {
-            serverUrl.setText("");
+        boolean needsToBeUpdated = true;
+        if (thrdPrtSrvBtn.isSelected()) {
+            String cldSrc = getThirdPartyServerCloudSrc();
+            // check if its latest server scenario
+            // if yes then directly set cloud source value and storage account to (none)
+            if (!cldSrc.isEmpty()) {
+                needsToBeUpdated = false;
+                serverUrl.setText(cldSrc);
+                storageAccountServer.insertItemAt("(none)", 0);
+            } else {
+                storageAccountServer.insertItemAt("(auto)", 0);
+            }
         }
+        if (needsToBeUpdated) {
+            if (isSASelectedForSrv()) {
+                serverUrl.setText(cmbBoxListener(storageAccountServer, serverUrl.getText(), JdkSrvConfig.SRV_TXT));
+            } else if (!customDownloadServer.isSelected()) {
+                serverUrl.setText("");
+            }
+        }
+    }
+
+    /**
+     * Returns cloud source value from download element as per third party server selected.
+     * @return
+     */
+    public String getThirdPartyServerCloudSrc() {
+        String url = "";
+        if (thrdPrtSrvBtn.isSelected()) {
+            try {
+                url = WindowsAzureProjectManager.getThirdPartyServerCloudSrc((String) thrdPrtSrvCmb.getSelectedItem(), AzurePlugin.cmpntFile);
+            } catch (WindowsAzureInvalidProjectOperationException e) {
+                url = "";
+            }
+        }
+        return url;
     }
 
     /**
@@ -2173,6 +2211,9 @@ public class JdkServerPanel {
 
             if (serverCheckBox.isSelected()) {
                 if (!srvName.isEmpty()) {
+                    // if its latest server scenario, then don't set cloudkey
+                    // it should be public download
+                    boolean setKey = true;
                     handleEndpointSettings(srvName);
                     waRole.setServer(srvName, srvPath, AzurePlugin.cmpntFile);
                     // JDK download group
@@ -2182,13 +2223,23 @@ public class JdkServerPanel {
                             srvUrl = AUTO;
                         }
                         if (thrdPrtSrvBtn.isSelected()) {
-                            waRole.setServerCldAltSrc(getServerCloudAltSource());
+                            String altSrcUrl = getServerCloudAltSource();
+                            if (altSrcUrl.isEmpty()) {
+                                setKey = false;
+                            } else {
+                                waRole.setServerCldAltSrc(altSrcUrl);
+                                waRole.setServerCloudUploadMode(WARoleComponentCloudUploadMode.auto);
+                            }
                             waRole.setServerCloudName((String) thrdPrtSrvCmb.getSelectedItem());
+                            waRole.setServerCloudValue(srvHome);
+                        } else {
+                            waRole.setServerCloudUploadMode(WARoleComponentCloudUploadMode.auto);
                         }
-                        waRole.setServerCloudUploadMode(WARoleComponentCloudUploadMode.auto);
                     }
                     waRole.setServerCloudURL(srvUrl);
-                    waRole.setServerCloudKey(AzureWizardModel.getAccessKey(storageAccountServer));
+                    if (setKey) {
+                        waRole.setServerCloudKey(AzureWizardModel.getAccessKey(storageAccountServer));
+                    }
                     updateServerHomeAsPerPackageType(srvHome);
                 }
             }
