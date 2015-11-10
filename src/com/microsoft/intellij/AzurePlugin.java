@@ -26,14 +26,20 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.components.AbstractProjectComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleTypeId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.util.PlatformUtils;
 import com.interopbridges.tools.windowsazure.WindowsAzureProjectManager;
+import com.microsoft.applicationinsights.preference.ApplicationInsightsResource;
+import com.microsoft.applicationinsights.preference.ApplicationInsightsResourceRegistry;
+import com.microsoft.intellij.ui.libraries.AILibraryHandler;
 import com.microsoft.intellij.ui.libraries.AzureLibrary;
 import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.AppInsightsCustomEvent;
+import com.microsoft.intellij.util.PluginUtil;
 import com.microsoft.intellij.util.WAHelper;
 import com.microsoftopentechnologies.azurecommons.util.WAEclipseHelperMethods;
 import com.microsoftopentechnologies.azurecommons.xmlhandling.DataOperations;
@@ -94,6 +100,7 @@ public class AzurePlugin extends AbstractProjectComponent {
     }
 
     public void projectOpened() {
+        initializeAIRegistry();
     }
 
     public void projectClosed() {
@@ -121,7 +128,6 @@ public class AzurePlugin extends AbstractProjectComponent {
     }
 
     private void initializeTelemetry() throws Exception {
-        System.out.println("Plugin location:" + pluginFolder);
         if (new File(dataFile).exists()) {
             String version = DataOperations.getProperty(dataFile, message("pluginVersion"));
             if (version == null || version.isEmpty()) {
@@ -152,6 +158,36 @@ public class AzurePlugin extends AbstractProjectComponent {
             // copy file and proceed with setValues method
             copyResourceFile(message("dataFileName"), dataFile);
             setValues(dataFile);
+        }
+    }
+
+    private void initializeAIRegistry() {
+        try {
+            AzureSettings.getSafeInstance(project).loadAppInsights();
+            Module[] modules = ModuleManager.getInstance(project).getModules();
+            for (Module module : modules) {
+                if (module != null && module.isLoaded() && ModuleTypeId.JAVA_MODULE.equals(module.getOptionValue(Module.ELEMENT_TYPE))) {
+                    String aiXMLPath = String.format("%s%s%s", PluginUtil.getModulePath(module), File.separator, message("aiXMLPath"));
+                    if (new File(aiXMLPath).exists()) {
+                        AILibraryHandler handler = new AILibraryHandler();
+                        handler.parseAIConfXmlPath(aiXMLPath);
+                        String key = handler.getAIInstrumentationKey();
+                        if (key != null && !key.isEmpty()) {
+                            String unknown = message("unknown");
+                            List<ApplicationInsightsResource> list =
+                                    ApplicationInsightsResourceRegistry.getAppInsightsResrcList();
+                            ApplicationInsightsResource resourceToAdd = new ApplicationInsightsResource(
+                                    key, key, unknown, unknown, unknown, unknown, false);
+                            if (!list.contains(resourceToAdd)) {
+                                ApplicationInsightsResourceRegistry.getAppInsightsResrcList().add(resourceToAdd);
+                            }
+                        }
+                    }
+                }
+            }
+            AzureSettings.getSafeInstance(project).saveAppInsights();
+        } catch (Exception ex) {
+            AzurePlugin.log(ex.getMessage(), ex);
         }
     }
 

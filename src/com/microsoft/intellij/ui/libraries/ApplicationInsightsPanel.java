@@ -24,6 +24,7 @@ package com.microsoft.intellij.ui.libraries;
 import com.intellij.openapi.application.AccessToken;
 import com.intellij.openapi.application.WriteAction;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.OrderEntry;
@@ -35,8 +36,11 @@ import com.intellij.openapi.roots.ui.configuration.projectRoot.LibrariesContaine
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.vfs.LocalFileSystem;
+import com.microsoft.applicationinsights.preference.ApplicationInsightsResourceRegistry;
 import com.microsoft.intellij.AzurePlugin;
+import com.microsoft.intellij.ui.AppInsightsMngmtPanel;
 import com.microsoft.intellij.ui.AzureAbstractPanel;
+import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
 import com.microsoft.intellij.util.PluginUtil;
 import org.jdesktop.swingx.JXHyperlink;
 
@@ -46,16 +50,18 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.microsoft.intellij.ui.messages.AzureBundle.message;
 
 public class ApplicationInsightsPanel implements AzureAbstractPanel {
     private JPanel rootPanel;
     private JCheckBox aiCheck;
-    private JTextField txtInstrumentationKey;
     private JXHyperlink lnkInstrumentationKey;
     private JXHyperlink lnkAIPrivacy;
     private JLabel lblInstrumentationKey;
+    private JComboBox comboInstrumentation;
 
     private AILibraryHandler handler;
     private Module module;
@@ -69,7 +75,7 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
     }
 
     private void init() {
-        initLink(lnkInstrumentationKey, message("lnkInstrumentationKey"), message("instrumentationKey"));
+        lnkInstrumentationKey.setAction(createApplicationInsightsAction());
         initLink(lnkAIPrivacy, message("lnkAIPrivacy"), message("AIPrivacy"));
         try {
             String webXmlFilePath = String.format("%s%s%s", PluginUtil.getModulePath(module), File.separator, webxmlPath);
@@ -83,13 +89,60 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
         } catch (Exception ex) {
             AzurePlugin.log(message("aiParseError"));
         }
+        setData();
         if (isEdit()) {
             populateData();
         } else {
-            txtInstrumentationKey.setEnabled(false);
-            lblInstrumentationKey.setEnabled(false);
+            if (aiCheck.isSelected()) {
+                comboInstrumentation.setEnabled(true);
+            } else {
+                comboInstrumentation.setEnabled(false);
+            }
         }
         aiCheck.addActionListener(createAiCheckListener());
+    }
+
+    private Action createApplicationInsightsAction() {
+        return new ApplicationInsightsAction();
+    }
+
+    private class ApplicationInsightsAction extends AbstractAction {
+        private ApplicationInsightsAction() {
+            super("Application Insights...");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            String oldName = (String) comboInstrumentation.getSelectedItem();
+            Project project = module.getProject();
+            final DefaultDialogWrapper dialog = new DefaultDialogWrapper(project, new AppInsightsMngmtPanel(project));
+            dialog.show();
+            setData();
+            List<String> list = Arrays.asList(ApplicationInsightsResourceRegistry.getResourcesNamesToDisplay());
+            // check user has not removed all entries from registry.
+            if (list.size() > 0) {
+                if (dialog.isOK()) {
+                    String newKey = dialog.getSelectedValue();
+                    int index = ApplicationInsightsResourceRegistry.getResourceIndexAsPerKey(newKey);
+                    if (index >= 0) {
+                        comboInstrumentation.setSelectedItem(list.get(index));
+                    } else if (list.contains(oldName)) {
+                        comboInstrumentation.setSelectedItem(oldName);
+                    }
+                } else if (list.contains(oldName)) {
+                    // if oldName is not present then its already set to first entry via setData method
+                    comboInstrumentation.setSelectedItem(oldName);
+                }
+            }
+        }
+    }
+
+    private void setData() {
+        comboInstrumentation.removeAll();
+        String[] array = ApplicationInsightsResourceRegistry.getResourcesNamesToDisplay();
+        if (array.length > 0) {
+            comboInstrumentation.setModel(new DefaultComboBoxModel(array));
+            comboInstrumentation.setSelectedItem(array[0]);
+        }
     }
 
     private ActionListener createAiCheckListener() {
@@ -97,13 +150,13 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (aiCheck.isSelected()) {
-                    txtInstrumentationKey.setEnabled(true);
-                    lblInstrumentationKey.setEnabled(true);
-                    txtInstrumentationKey.setText(handler.getAIInstrumentationKey() != null ? handler.getAIInstrumentationKey() : "");
+                    setData();
+                    populateData();
                 } else {
-                    txtInstrumentationKey.setText("");
-                    txtInstrumentationKey.setEnabled(false);
-                    lblInstrumentationKey.setEnabled(false);
+                    if (comboInstrumentation.getItemCount() > 0) {
+                        comboInstrumentation.setSelectedIndex(0);
+                    }
+                    comboInstrumentation.setEnabled(false);
                 }
             }
         };
@@ -127,7 +180,7 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
     @Override
     public boolean doOKAction() {
         // validate
-        if (aiCheck.isSelected() && (txtInstrumentationKey.getText() == null || txtInstrumentationKey.getText().trim().length() == 0)) {
+        if (aiCheck.isSelected() && (comboInstrumentation.getSelectedItem() == null || ((String) comboInstrumentation.getSelectedItem()).isEmpty())) {
             PluginUtil.displayErrorDialog(message("aiErrTitle"), message("aiInstrumentationKeyNull"));
             return false;
         } else if (!aiCheck.isSelected()) {
@@ -155,8 +208,24 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
 
     private void populateData() {
         aiCheck.setSelected(true);
-        txtInstrumentationKey.setText(handler.getAIInstrumentationKey());
-        txtInstrumentationKey.setEnabled(true);
+        String keyFromFile = handler.getAIInstrumentationKey();
+        int index = -1;
+        if (keyFromFile != null && !keyFromFile.isEmpty()) {
+            index = ApplicationInsightsResourceRegistry.getResourceIndexAsPerKey(keyFromFile);
+        }
+        if (index >= 0) {
+            String[] array = ApplicationInsightsResourceRegistry.getResourcesNamesToDisplay();
+            comboInstrumentation.setSelectedItem(array[index]);
+        } else {
+			/*
+			 * User has specifically removed single entry or all entries from the registry,
+			 * which we added during eclipse start up
+			 * hence it does not make sense to put an entry again. Just leave as it is.
+			 * If registry is non empty, then value will be set to 1st entry.
+			 * If registry is empty, then combo box will be empty.
+			 */
+        }
+        comboInstrumentation.setEnabled(true);
     }
 
     private boolean isEdit() {
@@ -199,9 +268,12 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
             String path = createFileIfNotExists(message("aiConfFileName"), message("aiConfRelDirLoc"), message("aiConfResFileLoc"));
             handler.parseAIConfXmlPath(path);
         }
-
-        if (txtInstrumentationKey.getText() != null && txtInstrumentationKey.getText().length() > 0) {
-            handler.setAIInstrumentationKey(txtInstrumentationKey.getText().trim());
+        String key = (String) comboInstrumentation.getSelectedItem();
+        if (key != null && key.length() > 0) {
+            int index = comboInstrumentation.getSelectedIndex();
+            if (index >= 0) {
+                handler.setAIInstrumentationKey(ApplicationInsightsResourceRegistry.getKeyAsPerIndex(index));
+            }
         }
     }
 

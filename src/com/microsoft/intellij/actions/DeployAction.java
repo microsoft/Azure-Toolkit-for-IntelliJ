@@ -397,7 +397,6 @@ public class DeployAction extends AnAction {
             log("onCancel");
             new Notification("Azure", "Cancelled", "Cancelled", NotificationType.INFORMATION);
         }
-
     }
 
     /**

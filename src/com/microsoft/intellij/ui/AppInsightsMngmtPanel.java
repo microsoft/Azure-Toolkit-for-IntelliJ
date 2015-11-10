@@ -121,6 +121,10 @@ public class AppInsightsMngmtPanel implements AzureAbstractConfigurablePanel {
     }
 
     public String getSelectedValue() {
+        int selectedIndex = insightsTable.getSelectedRow();
+        if (selectedIndex >= 0) {
+            return ((InsightsTableModel) insightsTable.getModel()).getKeyAtIndex(selectedIndex);
+        }
         return null;
     }
 
@@ -399,8 +403,8 @@ public class AppInsightsMngmtPanel implements AzureAbstractConfigurablePanel {
             this.resources = accounts;
         }
 
-        public String getResourceNameAtIndex(int index) {
-            return resources.get(index).getResourceName();
+        public String getKeyAtIndex(int index) {
+            return resources.get(index).getInstrumentationKey();
         }
 
         public int getColumnCount() {
