@@ -98,6 +98,11 @@
     <action id="Actions.ApplicationInsightsAction"
             class="com.microsoft.intellij.actions.ApplicatioInsightsAction" text="Configure Application Insights..."
             description="Configure Application Insights..."/>
+    <action id="Actions.AzureWebDeploy" class="com.microsoft.intellij.actions.AzureWebDeployAction"
+            text="Azure Web Deploy" description="Azure website deployment for Java"
+            icon="/com/microsoft/intellij/icons/windowsazuredeploy.png">
+        <add-to-group group-id="ToolbarRunGroup" anchor="after" relative-to-action="RunnerActions"/>
+    </action>
 
     <group id="AzurePopupGroup" text="Azure" description="Azure" icon="/icons/small/windowsAzure.png" popup="true"
            class="com.microsoft.intellij.actions.AzurePopupGroup">
@@ -120,6 +125,13 @@
       <reference ref="Actions.PackageAction"/>
       <reference ref="Actions.DeployAction"/>
       <reference ref="Actions.UnpublishAction"/>
+    </group>
+
+    <group id="AzureWebDeployGroup" text="Azure Web Deploy" description="Azure website deployment for Java"
+           popup="false">
+        <separator/>
+        <reference ref="Actions.AzureWebDeploy"/>
+        <add-to-group group-id="PublishGroup" anchor="last"/>
     </group>
   </actions>
 
