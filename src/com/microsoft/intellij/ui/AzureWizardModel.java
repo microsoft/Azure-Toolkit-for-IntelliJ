@@ -30,10 +30,12 @@ import com.interopbridges.tools.windowsazure.WindowsAzureRole;
 import com.microsoft.intellij.ui.components.AzureWizardStep;
 import com.microsoft.intellij.ui.messages.AzureBundle;
 import com.microsoft.intellij.util.AppCmpntParam;
+import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccount;
 import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class AzureWizardModel extends WizardModel {
@@ -101,8 +103,9 @@ public class AzureWizardModel extends WizardModel {
         String key = "";
         // get access key.
         int strgAccIndex = combo.getSelectedIndex();
-        if (strgAccIndex > 0 && !combo.getSelectedItem().toString().isEmpty()) {
-            key = StorageAccountRegistry.getStrgList().get(strgAccIndex - 1).getStrgKey();
+        List<StorageAccount> list =  StorageAccountRegistry.getStrgList();
+        if (strgAccIndex > 0 && !combo.getSelectedItem().toString().isEmpty() && list.size() > 0) {
+            key = list.get(strgAccIndex - 1).getStrgKey();
         }
         return key;
     }
