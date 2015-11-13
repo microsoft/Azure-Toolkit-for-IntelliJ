@@ -170,9 +170,17 @@
   <path id="library..cspack.classpath">
     <pathelement location="${basedir}/lib/.cspack.jar"/>
   </path>
-  
+
   <path id="library.antintegration.classpath">
     <pathelement location="${idea.home}/plugins/ant/lib/antIntegration.jar"/>
+  </path>
+
+  <path id="library.common-lib.classpath">
+    <pathelement location="${basedir}/lib/common-lib.jar"/>
+  </path>
+
+  <path id="library.azure-services-explorer-plugin.classpath">
+    <pathelement location="${basedir}/lib/azure-services-explorer-plugin.jar"/>
   </path>
   
   <path id="library.azure-sdk.classpath">
@@ -273,6 +281,8 @@
     <path refid="library.projectmanagerlibrary.classpath"/>
     <path refid="library.antintegration.classpath"/>
     <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
+    <path refid="library.common-lib.classpath"/>
+    <path refid="library.azure-services-explorer-plugin.classpath"/>
   </path>
   
   <path id="azure-toolkit-for-intellij.runtime.production.module.classpath">
@@ -292,6 +302,8 @@
     <path refid="library.projectmanagerlibrary.classpath"/>
     <path refid="library.antintegration.classpath"/>
     <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
+    <path refid="library.common-lib.classpath"/>
+    <path refid="library.azure-services-explorer-plugin.classpath"/>
   </path>
   
   <path id="azure-toolkit-for-intellij.runtime.module.classpath">
@@ -305,6 +317,8 @@
     <path refid="library.projectmanagerlibrary.classpath"/>
     <path refid="library.antintegration.classpath"/>
     <path refid="library.org.apache.commons:commons-lang3:3.4.classpath"/>
+    <path refid="library.common-lib.classpath"/>
+    <path refid="library.azure-services-explorer-plugin.classpath"/>
   </path>
   
   
