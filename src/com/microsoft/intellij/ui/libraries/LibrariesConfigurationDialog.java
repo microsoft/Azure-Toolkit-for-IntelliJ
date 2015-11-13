@@ -144,7 +144,7 @@ public class LibrariesConfigurationDialog extends DialogWrapper {
                 AddLibraryUtility.addLibraryRoot(file, newLibraryModel);
                 // if some files already contained in plugin dependencies, take them from there - true for azure sdk library
                 if (azureLibrary.getFiles().length > 0) {
-                    AddLibraryUtility.addLibraryFiles(new File(String.format("%s%s%s", AzurePlugin.pluginFolder, File.separator, "lib")), newLibraryModel, azureLibrary.getFiles());
+                    AddLibraryUtility.addLibraryFiles(new File(PluginUtil.getAzureLibLocation()), newLibraryModel, azureLibrary.getFiles());
                 }
                 newLibraryModel.commit();
                 modifiableModel.commit();
