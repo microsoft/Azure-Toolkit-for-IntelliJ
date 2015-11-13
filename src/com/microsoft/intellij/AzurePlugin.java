@@ -71,7 +71,7 @@ public class AzurePlugin extends AbstractProjectComponent {
     public static final String COMMON_LIB_PLUGIN_ID = "azure-services-explorer-plugin";
     public static final String COMPONENTSETS_VERSION = "2.8.0"; // todo: temporary fix!
     private static final String PREFERENCESETS_VERSION = "2.8.0";
-    public static final String AZURE_LIBRARIES_VERSION = "0.7.0";
+    public static final String AZURE_LIBRARIES_VERSION = "0.9.0";
     public static final String QPID_LIBRARIES_VERSION = "0.19.0";
     public final static int REST_SERVICE_MAX_RETRY_COUNT = 7;
 
