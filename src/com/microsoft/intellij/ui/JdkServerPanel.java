@@ -330,7 +330,7 @@ public class JdkServerPanel {
                         String cldSrc = getThirdPartyServerCloudSrc();
                         // check if its latest server scenario then set storage account to (none)
                         if (!cldSrc.isEmpty()) {
-                            storageAccountServer.insertItemAt("(none)", 0);
+//                            storageAccountServer.insertItemAt("(none)", 0);
                         }
                     }
                 }
@@ -386,6 +386,7 @@ public class JdkServerPanel {
         thirdPartyJdkName.addItemListener(createThirdPartyJdkNameListener());
 //        setEnableDlGrp(false, false);
         thrdPrtSrvBtn.addActionListener(createThirdPartySrvListener());
+        thrdPrtSrvCmb.addItemListener(createthrdPrtSrvCmbListener());
         setEnableDlGrpSrv(false, false);
         storageAccountServer.addItemListener(createStorageAccountServerListener());
         serverUrl.getDocument().addDocumentListener(createServerUrlListener());
@@ -963,6 +964,25 @@ public class JdkServerPanel {
         };
     }
 
+    private ItemListener createthrdPrtSrvCmbListener() {
+        return new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                modified = true;
+                thirdPartySrvComboListener();
+				/*
+				 * If server name is changed by user then license
+				 * has to be accepted again.
+				 */
+                String currentName = (String) thrdPrtSrvCmb.getSelectedItem();
+                if (currentName == null || !currentName.equalsIgnoreCase(srvPrevName)) {
+                    srvAccepted = false;
+                    srvPrevName = currentName;
+                }
+            }
+        };
+    }
+
     private ItemListener createThirdPartyJdkNameListener() {
         return new ItemListener() {
             @Override
@@ -1463,7 +1483,7 @@ public class JdkServerPanel {
     }
 
     /**
-     * Listener for third party JDK name combo box.
+     * Listener for third party Server name combo box.
      * Updates URL and java home.
      */
     public void thirdPartySrvComboListener() {
@@ -1784,9 +1804,9 @@ public class JdkServerPanel {
             if (!cldSrc.isEmpty()) {
                 needsToBeUpdated = false;
                 serverUrl.setText(cldSrc);
-                storageAccountServer.insertItemAt("(none)", 0);
+//                storageAccountServer.insertItemAt("(none)", 0);
             } else {
-                storageAccountServer.insertItemAt("(auto)", 0);
+//                storageAccountServer.insertItemAt("(auto)", 0);
             }
         }
         if (needsToBeUpdated) {
