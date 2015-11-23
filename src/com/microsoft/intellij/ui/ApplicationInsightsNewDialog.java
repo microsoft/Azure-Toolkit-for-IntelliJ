@@ -149,7 +149,7 @@ public class ApplicationInsightsNewDialog extends DialogWrapper {
                     groupStringList.add(group.getName());
                 }
                 String[] groupArray = groupStringList.toArray(new String[groupStringList.size()]);
-                comboGrp.removeAll();
+                comboGrp.removeAllItems();
                 comboGrp.setModel(new DefaultComboBoxModel(groupArray));
                 if (valtoSet.isEmpty() || !groupStringList.contains(valtoSet)) {
                     comboGrp.setSelectedItem(groupArray[0]);

@@ -137,7 +137,7 @@ public class ApplicationInsightsPanel implements AzureAbstractPanel {
     }
 
     private void setData() {
-        comboInstrumentation.removeAll();
+        comboInstrumentation.removeAllItems();
         String[] array = ApplicationInsightsResourceRegistry.getResourcesNamesToDisplay();
         if (array.length > 0) {
             comboInstrumentation.setModel(new DefaultComboBoxModel(array));
