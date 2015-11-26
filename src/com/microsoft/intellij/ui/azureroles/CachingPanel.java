@@ -45,6 +45,7 @@ import com.microsoft.intellij.ui.components.DefaultDialogWrapper;
 import com.microsoft.intellij.ui.util.JdkSrvConfig;
 import com.microsoft.intellij.ui.util.UIUtils;
 import com.microsoft.intellij.util.PluginUtil;
+import com.microsoftopentechnologies.azurecommons.propertypage.Azure;
 import com.microsoftopentechnologies.azurecommons.roleoperations.WARCachingUtilMethods;
 import com.microsoftopentechnologies.azurecommons.storageregistry.StorageAccountRegistry;
 import com.microsoftopentechnologies.azurecommons.storageregistry.StorageRegistryUtilMethods;
@@ -150,6 +151,7 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
         cacheScale.addChangeListener(createCacheScaleListener());
         txtCache.addFocusListener(createTxtCacheListener());
         accLink.setAction(createAccLinkAction());
+        comboStrgAcc.addItemListener(createcomboStrgAccListener());
 
         CacheTableModel myModel = new CacheTableModel(new ArrayList<WindowsAzureNamedCache>(mapCache.values()));
         tblCache.setModelAndUpdateColumns(myModel);
@@ -161,6 +163,7 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
         return new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
+                setModified(true);
                 JSlider source = (JSlider) e.getSource();
                 int value = source.getValue();
                 if (!source.getValueIsAdjusting()) { //done adjusting
@@ -169,6 +172,15 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
                 } else { //value is adjusting; just set the text
                     txtCache.setText(String.valueOf(value));
                 }
+            }
+        };
+    }
+
+    private ItemListener createcomboStrgAccListener() {
+        return new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                setCacheNameKey();
             }
         };
     }
@@ -189,6 +201,7 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
             @Override
             public void focusLost(FocusEvent e) {
                 if (!txtCache.getText().equals(oldTxt)) {
+                    setModified(true);
                     int cacheVal = 0;
                     Boolean isNumber = true;
                     try {
@@ -301,6 +314,7 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
                 }
                 // update storage account combo box
                 JdkSrvConfig.populateStrgAccComboBox(finalNameToSet, comboStrgAcc, null, JdkSrvConfig.AUTO_TXT.equals(finalNameToSet));
+                setCacheNameKey();
             }
         };
     }
@@ -321,6 +335,7 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
         }
         setKey(key);
         setBlobUrl(url);
+        setModified(true);
     }
 
     /**
@@ -396,7 +411,6 @@ public class CachingPanel extends BaseConfigurable implements SearchableConfigur
         try {
             waRole.setCacheMemoryPercent(cachVal);
             isCachPerValid = true;
-//            setErrorMessage(null);
         } catch (Exception e) {
 			/*
 			 * User has given input
