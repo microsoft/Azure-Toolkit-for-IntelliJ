@@ -21,9 +21,9 @@
  */
 package com.microsoft.tasks;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import com.microsoft.intellij.AzurePlugin;
 import com.microsoft.intellij.deploy.DeploymentManager;
 import com.microsoft.wacommon.utils.WACommonException;
@@ -40,8 +40,8 @@ public class WindowsAzureUndeploymentTask extends Task.Backgroundable {
     private String deploymentName;
     private String deploymentState;
 
-    public WindowsAzureUndeploymentTask(Module module, String serviceName, String deploymentName, String deploymentState) {
-        super(module.getProject(), message("deployingToAzure"), true, Backgroundable.DEAF);
+    public WindowsAzureUndeploymentTask(Project project, String serviceName, String deploymentName, String deploymentState) {
+        super(project, message("deployingToAzure"), true, Backgroundable.DEAF);
         this.serviceName = serviceName;
         this.deploymentName = deploymentName;
         this.deploymentState = deploymentState;

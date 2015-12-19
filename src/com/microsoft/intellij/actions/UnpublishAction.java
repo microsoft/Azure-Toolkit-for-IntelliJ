@@ -23,6 +23,7 @@ package com.microsoft.intellij.actions;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.microsoft.intellij.module.AzureModuleType;
 import com.microsoft.intellij.ui.UndeployWizardDialog;
@@ -33,13 +34,13 @@ import com.microsoft.windowsazure.management.compute.models.HostedServiceGetDeta
 
 public class UnpublishAction extends AnAction {
     public void actionPerformed(AnActionEvent event) {
-        Module module = event.getData(LangDataKeys.MODULE);
-        UndeployWizardDialog deployDialog = new UndeployWizardDialog(module);
+        Project project = event.getData(LangDataKeys.PROJECT);
+        UndeployWizardDialog deployDialog = new UndeployWizardDialog(project);
         deployDialog.show();
         if (deployDialog.isOK()) {
             Deployment deployment = deployDialog.getDeployment();
             WindowsAzureUndeploymentTask undeploymentTask =
-                    new WindowsAzureUndeploymentTask(module, deployDialog.getServiceName(), deployment.getName(), deployment.getDeploymentSlot().toString());
+                    new WindowsAzureUndeploymentTask(project, deployDialog.getServiceName(), deployment.getName(), deployment.getDeploymentSlot().toString());
             undeploymentTask.queue();
         }
     }

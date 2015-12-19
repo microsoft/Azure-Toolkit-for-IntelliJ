@@ -21,10 +21,11 @@
  */
 package com.microsoft.intellij.ui;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.TitlePanel;
+import com.intellij.openapi.ui.ValidationInfo;
 import com.microsoft.intellij.AzureSettings;
 import com.microsoft.intellij.runnable.FetchDeploymentsForHostedServiceWithProgressWindow;
 import com.microsoft.intellij.runnable.LoadAccountWithProgressBar;
@@ -52,12 +53,12 @@ public class UndeployWizardDialog extends DialogWrapper {
     private JComboBox hostedServiceCombo;
     private JComboBox deploymentCombo;
 
-    private Module myModule;
+    private Project myProject;
     private PublishData currentPublishData;
 
-    public UndeployWizardDialog(Module module) {
-        super(module.getProject());
-        this.myModule = module;
+    public UndeployWizardDialog(Project project) {
+        super(project);
+        this.myProject = project;
         init();
     }
 
@@ -68,14 +69,13 @@ public class UndeployWizardDialog extends DialogWrapper {
         subscriptionCombo.addItemListener(createSubscriptionComboListener());
         hostedServiceCombo.addItemListener(createHostedServiceComboListener());
         deploymentCombo.addItemListener(createDeploymentComboListener());
-        AzureSettings azureSettings = AzureSettings.getSafeInstance(myModule.getProject());
+        AzureSettings azureSettings = AzureSettings.getSafeInstance(myProject);
         if (!azureSettings.isSubscriptionLoaded()) {
-            LoadAccountWithProgressBar task = new LoadAccountWithProgressBar(myModule.getProject());
-            ProgressManager.getInstance().runProcessWithProgressSynchronously(task, "Loading Account Settings...", true, myModule.getProject());
+            LoadAccountWithProgressBar task = new LoadAccountWithProgressBar(myProject);
+            ProgressManager.getInstance().runProcessWithProgressSynchronously(task, "Loading Account Settings...", true, myProject);
             azureSettings.setSubscriptionLoaded(true);
         }
         populateSubscriptionCombo();
-        validatePageComplete();
 
         super.init();
     }
@@ -153,7 +153,7 @@ public class UndeployWizardDialog extends DialogWrapper {
             HostedServiceGetDetailedResponse hostedServiceDetailed;
             FetchDeploymentsForHostedServiceWithProgressWindow progress =
                     new FetchDeploymentsForHostedServiceWithProgressWindow(null, hostedServiceCombo.getSelectedItem().toString());
-            ProgressManager.getInstance().runProcessWithProgressSynchronously(progress, "Progress Information", true, myModule.getProject());
+            ProgressManager.getInstance().runProcessWithProgressSynchronously(progress, "Progress Information", true, myProject);
 
             hostedServiceDetailed = progress.getHostedServiceDetailed();
 
@@ -184,24 +184,21 @@ public class UndeployWizardDialog extends DialogWrapper {
         deploymentCombo.setEnabled(hostedServiceCombo.getSelectedIndex() > -1 && deploymentCombo.getItemCount() > 0);
     }
 
-    protected boolean validatePageComplete() {
+    @Override
+    protected ValidationInfo doValidate() {
         Object subscription = subscriptionCombo.getSelectedItem();
         if (subscription == null) {
-//            setErrorMessage("subscription can not be null or empty");
-            return false;
+            return new ValidationInfo("subscription can not be null or empty");
         }
         Object service = hostedServiceCombo.getSelectedItem();
         if (service == null) {
-//            setErrorMessage(message("hostedServiceIsNull"));
-            return false;
+            return new ValidationInfo(message("hostedServiceIsNull"));
         }
         ElementWrapper<Deployment> deploymentItem = (ElementWrapper<Deployment>) deploymentCombo.getSelectedItem();
         if (deploymentItem == null) {
-//            setErrorMessage(message("deploymentIsNull"));
-            return false;
+            return new ValidationInfo(message("deploymentIsNull"));
         }
-//        setErrorMessage(null);
-        return true;
+        return null;
     }
 
     public String getServiceName() {
