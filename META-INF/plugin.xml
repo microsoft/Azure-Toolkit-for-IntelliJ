@@ -70,8 +70,8 @@
             class="com.microsoft.intellij.actions.ResetEmulatorAction" text="Reset Azure Emulator"
             description="Reset Azure Emulator" icon="/icons/ResetEmulatorIcon.png"/>
     <action id="Actions.PackageAction" class="com.microsoft.intellij.actions.PackageAction"
-            text="Package for Azure"
-            description="Package for Azure" icon="/icons/small/cloudService.png"/>
+            text="New Azure Deployment Project"
+            description="New Azure Deployment Project" icon="/icons/small/cloudService.png"/>
     <action id="Actions.DeployAction" class="com.microsoft.intellij.actions.DeployAction"
             text="Publish to Azure"
             description="Publish to Azure Cloud" icon="/icons/publish.png"/>
