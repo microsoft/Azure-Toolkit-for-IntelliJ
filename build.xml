@@ -390,6 +390,7 @@
     <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/ProjectManagerLibrary.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/ProjectManagerLibrary.jar"/>
     <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/.cspack.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/.cspack.jar"/>
     <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/AzureCommons.jar" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/AzureCommons.jar"/>
+    <copy file="${module.azure-toolkit-for-intellij.basedir}/lib/ThirdPartyNotices.txt" tofile="${tmp.dir.azure-toolkit-for-intellij}/azure-toolkit-for-intellij/lib/ThirdPartyNotices.txt"/>
     <zip destfile="${azure-toolkit-for-intellij.plugin.path.jar}">
       <fileset dir="${module.azure-toolkit-for-intellij.basedir}/../temp"/>
     </zip>
