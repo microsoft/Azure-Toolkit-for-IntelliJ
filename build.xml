@@ -186,8 +186,8 @@
   <path id="library.azure-sdk.classpath">
     <pathelement location="${basedir}/lib/azure-sdk/azure-core-0.9.0.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/annotation-detector-3.0.4.jar"/>
-    <pathelement location="${basedir}/lib/azure-sdk/applicationinsights-core-1.0.1.jar"/>
-    <pathelement location="${basedir}/lib/azure-sdk/applicationinsights-web-1.0.1.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/applicationinsights-core-1.0.2.jar"/>
+    <pathelement location="${basedir}/lib/azure-sdk/applicationinsights-web-1.0.2.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/applicationinsights-management-1.0.2.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/commons-codec-1.6.jar"/>
     <pathelement location="${basedir}/lib/azure-sdk/commons-io-2.4.jar"/>
