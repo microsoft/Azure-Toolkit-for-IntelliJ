@@ -84,7 +84,7 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
                 DataOperations.updatePropertyValue(doc, message("prefVal"), String.valueOf(checkBox1.isSelected()));
                 String version = DataOperations.getProperty(dataFile, message("pluginVersion"));
                 if (version == null || version.isEmpty()) {
-                    DataOperations.updatePropertyValue(doc, message("pluginVersion"), AzurePlugin.COMPONENTSETS_VERSION);
+                    DataOperations.updatePropertyValue(doc, message("pluginVersion"), AzurePlugin.PLUGIN_VERSION);
                 }
                 String instID = DataOperations.getProperty(dataFile, message("instID"));
                 if (instID == null || instID.isEmpty()) {
@@ -113,7 +113,7 @@ public class AzurePanel implements AzureAbstractConfigurablePanel {
 
     private void setValues(String dataFile) throws Exception {
         Document doc = ParseXMLUtilMethods.parseFile(dataFile);
-        DataOperations.updatePropertyValue(doc, message("pluginVersion"), AzurePlugin.COMPONENTSETS_VERSION);
+        DataOperations.updatePropertyValue(doc, message("pluginVersion"), AzurePlugin.PLUGIN_VERSION);
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         DataOperations.updatePropertyValue(doc, message("instID"), dateFormat.format(new Date()));
         DataOperations.updatePropertyValue(doc, message("prefVal"), String.valueOf(checkBox1.isSelected()));

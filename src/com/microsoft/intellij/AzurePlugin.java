@@ -69,7 +69,8 @@ public class AzurePlugin extends AbstractProjectComponent {
     private static final Logger LOG = Logger.getInstance("#com.microsoft.intellij.AzurePlugin");
     public static final String PLUGIN_ID = "azure-toolkit-for-intellij";
     public static final String COMMON_LIB_PLUGIN_ID = "azure-services-explorer-plugin";
-    public static final String COMPONENTSETS_VERSION = "2.8.0"; // todo: temporary fix!
+    public static final String COMPONENTSETS_VERSION = "2.8.0.1"; // todo: temporary fix!
+    public static final String PLUGIN_VERSION = "1.1";
     private static final String PREFERENCESETS_VERSION = "2.8.0";
     public static final String AZURE_LIBRARIES_VERSION = "0.9.0";
     public static final String QPID_LIBRARIES_VERSION = "0.19.0";
@@ -134,7 +135,7 @@ public class AzurePlugin extends AbstractProjectComponent {
                 // proceed with setValues method as no version specified
                 setValues(dataFile);
             } else {
-                String curVersion = COMPONENTSETS_VERSION;
+                String curVersion = PLUGIN_VERSION;
                 // compare version
                 if (curVersion.equalsIgnoreCase(version)) {
                     // Case of normal IntelliJ restart
@@ -199,7 +200,7 @@ public class AzurePlugin extends AbstractProjectComponent {
                 boolean accepted = Messages.showYesNoDialog(message("preferenceQueMsg"), message("preferenceQueTtl"), null) == Messages.YES;
                 DataOperations.updatePropertyValue(doc, message("prefVal"), String.valueOf(accepted));
 
-                DataOperations.updatePropertyValue(doc, message("pluginVersion"), COMPONENTSETS_VERSION);
+                DataOperations.updatePropertyValue(doc, message("pluginVersion"), PLUGIN_VERSION);
                 DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
                 DataOperations.updatePropertyValue(doc, message("instID"), dateFormat.format(new Date()));
                 try {

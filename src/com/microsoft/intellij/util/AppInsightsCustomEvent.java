@@ -16,7 +16,7 @@ public class AppInsightsCustomEvent {
             String prefValue = DataOperations.getProperty(dataFile, message("prefVal"));
             if (prefValue != null && !prefValue.isEmpty() && prefValue.equalsIgnoreCase("true")) {
                 TelemetryClient telemetry = new TelemetryClient();
-                telemetry.getContext().setInstrumentationKey("220c5e6d-14da-4ae1-b2e4-8497bf78a6b1");
+                telemetry.getContext().setInstrumentationKey("appinsights-instrumentation-key");
                 Map<String, String> properties = new HashMap<String, String>();
                 if (version != null && !version.isEmpty()) {
                     properties.put("Library Version", version);
